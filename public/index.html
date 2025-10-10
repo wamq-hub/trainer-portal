@@ -1,0 +1,2313 @@
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8">
+      <title>🎯 منصة الإرشاد التدريبي</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="description" content="نظام متكامل للخدمات الإرشادية والأكاديمية بالمؤسسة العامة للتدريب التقني والمهني">
+      <meta name="keywords" content="TVTC, إرشاد, تدريب, تقني, مهني">
+      
+      <!-- PWA Manifest (مضمنة) -->
+      <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi2YXZhtiz2Kkg2KfZhNil2LHYtNin2K8g2KfZhNiq2K/YsdmK2KjZiCIsInNob3J0X25hbWUiOiLYo9ix2LTYp9ivIFRWVEMiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJ0aGVtZV9jb2xvciI6IiMwMDcwQzAiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI0YyRjJGMiJ9">
+      <meta name="theme-color" content="#0070C0">
+
+
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+      <link rel="icon" href="/icons/icon-192.png">
+      <link rel="apple-touch-icon" href="/icons/icon-192.png">
+      <meta name="theme-color" content="#0070C0">
+
+
+
+      <style>
+        :root{
+          --primary-dark:#003366;   /* TVTC الأزرق الغامق */
+          --primary:#0070C0;        /* TVTC الأزرق */
+          --secondary:#00ADEF;      /* TVTC السماوي */
+          --text:#4D4D4D;
+          --bg:#F2F2F2;
+          --white:#fff;
+          --ok:#51cf66; --warn:#ffd43b; --err:#ff6b6b;
+          --shadow: 0 10px 30px rgba(0,0,0,.1);
+          --shadow-hover: 0 15px 35px rgba(0,0,0,.15);
+        }
+        
+        *{box-sizing:border-box}
+
+        /* فاصل بعنوان */
+        .ui-sep{
+          position:relative;
+          margin:28px 0 14px;
+          text-align:center;
+        }
+        .ui-sep::before{
+          content:"";
+          display:block;
+          height:2px;
+          background:linear-gradient(90deg, transparent, rgba(0,112,192,.35), rgba(0,173,239,.65), transparent);
+          border-radius:2px;
+        }
+        .ui-sep .chip{
+          position:relative;
+          top:-14px;
+          display:inline-block;
+          padding:6px 14px;
+          background:var(--white);
+          color:var(--primary-dark);
+          border:1px solid rgba(0,0,0,.06);
+          border-radius:999px;
+          font-weight:700;
+          box-shadow:0 2px 8px rgba(0,0,0,.08);
+          letter-spacing:.2px;
+        }
+        body.dark-mode .ui-sep .chip{
+          background:#222;
+          color:#cfe6ff;
+          border-color:#333;
+          box-shadow:0 2px 10px rgba(0,0,0,.35);
+        }
+
+        /* مسافة إضافية للوضوح */
+        .panels-below{
+          margin-top:10px;
+        }
+
+        body {
+          font-family: 'Tajawal', system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+          background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+          color: var(--text);
+          min-height: 100vh; margin:0; padding:20px;
+          transition: background 0.3s ease, color .3s ease;
+          overflow-x: hidden;
+        }
+        body.dark-mode { 
+          background: linear-gradient(135deg,#1f1f1f,#2a2a2a); 
+          color:#eee; 
+        }
+
+        .container {
+          max-width: 900px; margin:auto; background:var(--white); padding:25px;
+          border-radius:15px; box-shadow:var(--shadow);
+          animation: slideInUp 0.6s ease-out;
+        }
+        body.dark-mode .container{ 
+          background:#222; color:#eaeaea; 
+          box-shadow:0 10px 30px rgba(0,0,0,.35);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0, 112, 192, 0.9);
+          display: none; align-items: center; justify-content: center;
+          z-index: 9999; backdrop-filter: blur(10px);
+        }
+        .loading-content { text-align: center; color: white; }
+        .spinner-large {
+          width: 60px; height: 60px; margin: 0 auto 20px;
+          border: 4px solid rgba(255,255,255,0.3);
+          border-top: 4px solid white;
+          border-radius: 50%; animation: spin 1s linear infinite;
+        }
+
+        .qr-img{width:220px;max-width:70vw;height:auto;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.12);transition:transform .2s,box-shadow .2s}
+        .qr-img:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+
+        /* رأس الصفحة */
+        .brand{ text-align:center; margin-bottom:15px; }
+        .brand .logo{ 
+          width:110px; height:110px; display:block; margin:0 auto 10px;
+          background: url('https://tvtc.gov.sa/ar/PublishingImages/logo.png') center/contain no-repeat #003366;
+          border-radius: 15px; box-shadow: var(--shadow);
+          transition: transform 0.3s ease;
+        }
+        .brand .logo:hover { transform: scale(1.05); }
+        
+        h1 { 
+          text-align:center; color:var(--primary-dark); margin:8px 0 6px; 
+          font-size: 2.2em; font-weight: 700;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        body.dark-mode h1{ color:#bcd2ff; }
+        
+        .subtitle{ 
+          text-align:center; margin:0 0 15px; color:#666; font-size:1rem;
+          line-height: 1.5;
+        }
+        body.dark-mode .subtitle{ color:#bdbdbd; }
+
+        /* كرت البحث القابل للطي */
+        .search-card{
+          display:none; margin:14px 0 6px; padding:16px; border-radius:14px;
+          background:#fff; border:2px solid #e3f2fd; box-shadow: var(--shadow);
+        }
+        body.dark-mode .search-card{ background:#1f1f1f; border-color:#2b3b4b; box-shadow:0 8px 28px rgba(0,0,0,.35) }
+
+        /* تذييل */
+        .site-footer{
+          margin:24px auto 0; max-width:900px; text-align:center; font-size:.95rem;
+          color:#385b7c; background:rgba(255,255,255,.65); padding:12px 14px; border-radius:12px; box-shadow:var(--shadow);
+        }
+        body.dark-mode .site-footer{ background:#141414; color:#9ec7ff; box-shadow:0 8px 28px rgba(0,0,0,.35) }
+
+        /* شريط أيقونات محسن */
+        .quick-icons{
+          display:flex; gap:10px; justify-content:center; flex-wrap:wrap; 
+          margin:10px 0 20px; animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .qi{
+          display:flex; align-items:center; gap:8px; padding:10px 15px;
+          background:#eef6ff; color:#0b66c3; border-radius:25px; 
+          cursor:pointer; user-select:none; font-size:0.95rem; font-weight: 500;
+          border:2px solid rgba(0,112,192,.12); 
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative; overflow: hidden;
+        }
+        .qi:hover { 
+          transform: translateY(-3px); 
+          box-shadow: 0 8px 20px rgba(0,112,192,0.25);
+          border-color: var(--primary);
+        }
+        .qi:active { transform: translateY(-1px); }
+        .qi .i{ font-size:20px; }
+        body.dark-mode .qi{ 
+          background:#0d2a45; color:#cfe6ff; 
+          border-color:rgba(255,255,255,.12);
+        }
+
+        /* نموذج البحث */
+        .form-group { margin:20px 0; position: relative; }
+        label{ 
+          display:block; margin-bottom:10px; font-weight: 600;
+          font-size: 1.1em; color: var(--primary-dark);
+        }
+        body.dark-mode label { color: #bcd2ff; }
+        .search-container { position: relative; }
+        input {
+          width:100%; padding:15px 50px 15px 20px; border-radius:12px;
+          border:2px solid #e1e5e9; font-size:1.1em;
+          background: #f8f9fa; transition: all 0.3s ease;
+          font-family: inherit;
+        }
+        input:focus {
+          outline:none; border-color:var(--primary);
+          background:white; transform:translateY(-2px);
+          box-shadow:0 8px 20px rgba(0,112,192,0.2);
+        }
+        body.dark-mode input{ background:#111; color:#fff; border-color:#444; }
+        body.dark-mode input:focus { background:#000; border-color:var(--secondary); }
+        .search-icon {
+          position: absolute; right: 15px; top: 50%;
+          transform: translateY(-50%); color: #999;
+          font-size: 1.2em; pointer-events: none;
+        }
+
+        .btn {
+          width:100%; padding:15px; margin-top:15px;
+          background:linear-gradient(135deg,var(--primary) 0%, var(--secondary) 100%);
+          color:#fff; border:none; border-radius:12px;
+          font-size:1.2em; font-weight:600; cursor:pointer; 
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative; overflow: hidden;
+        }
+        .btn:hover { transform:translateY(-3px); box-shadow:0 12px 25px rgba(0,112,192,0.3); }
+        .btn:active { transform:translateY(-1px); }
+        .btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+        /* الرسائل */
+        .message { 
+          display:none; padding:15px 20px; border-radius:10px; margin:15px 0; 
+          text-align:center; font-weight: 500; position: relative;
+          animation: slideInDown 0.5s ease-out;
+        }
+        .success{background:var(--ok);color:white; border-left: 5px solid #40c057;}
+        .error{background:var(--err);color:white; border-left: 5px solid #fa5252;}
+        .warning{background:var(--warn);color:#333; border-left: 5px solid #fd7e14;}
+
+        /* معلومات المرشد */
+        .trainer-info{
+          display:none;margin-top:25px;padding:20px;
+          background:linear-gradient(135deg,var(--primary) 0%, var(--secondary) 100%);
+          color:white;border-radius:15px;
+          box-shadow: var(--shadow); position: relative;
+          animation: fadeInUp 0.6s ease-out;
+        }
+        .trainer-info h3 { margin: 0 0 20px; font-size: 1.5em; text-align: center; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .info-item{
+          margin:12px 0;background:rgba(255,255,255,0.15);
+          padding:12px 15px;border-radius:8px;
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+        }
+        .info-item:hover { background:rgba(255,255,255,0.2); transform: translateX(-5px); }
+        .info-item strong { display: block; margin-bottom: 8px; font-size: 1.05em; opacity: 0.9; }
+        .clickable-info{ color:#87CEEB; text-decoration:underline; transition: color 0.3s ease; }
+        .clickable-info:hover { color: #ffffff; }
+        .non-clickable{color:#ffeeee; opacity: 0.8;}
+        a#mentorGroupLink{ color:#fff; text-decoration:underline; padding: 8px 15px; background: rgba(255,255,255,0.2);
+          border-radius: 6px; display: inline-block; margin-top: 5px; transition: all 0.3s ease; }
+        a#mentorGroupLink:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+
+        /* أزرار المشاركة والطباعة */
+        .action-buttons { margin-top:20px;text-align:center; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .share-btn { background:rgba(255,255,255,0.2); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:0.95em; font-weight: 500; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+        .share-btn:hover { background:rgba(255,255,255,0.3); transform: translateY(-2px); }
+
+        /* التبديل بين الأوضاع */
+        .theme-toggle {
+          position:fixed;top:20px;right:20px;
+          background:rgba(255,255,255,0.15);border:none;
+          border-radius:50px;padding:12px 18px;color:white;
+          cursor:pointer;z-index:1000; backdrop-filter: blur(10px);
+          transition: all 0.3s ease; font-size: 1.2em;
+        }
+        .theme-toggle:hover { background:rgba(255,255,255,0.25); transform: scale(1.1); }
+        body.dark-mode .theme-toggle{ background:rgba(0,0,0,.4); }
+
+        /* اقتراحات البحث */
+        .search-suggestions {
+          position:absolute;top:100%;left:0;right:0;
+          background:white;border:2px solid #e1e5e9;
+          border-radius:12px;max-height:250px;overflow-y:auto;
+          display:none;z-index:500; margin-top: 5px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        body.dark-mode .search-suggestions{ background:#111; border-color:#444; color:#eee; }
+        .suggestion-item.disabled{cursor:not-allowed;opacity:.6;pointer-events:none}
+        .suggestion-item{ padding:12px 15px;cursor:pointer; border-bottom: 1px solid #f0f0f0; transition: all 0.3s ease; font-size: 0.95em; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover{ background:#f8f9fa; padding-left: 20px; }
+        body.dark-mode .suggestion-item { border-color: #333; }
+        body.dark-mode .suggestion-item:hover{ background:#1c1c1c; }
+
+        /* لوحات الخدمات */
+        .departments-panel, .guidance-panel {
+          display:none; margin-top:20px; padding:20px;
+          border:2px solid rgba(0,112,192,.12); border-radius:15px; 
+          background:#f8f9fa; animation: expandIn 0.5s ease-out;
+        }
+        body.dark-mode .departments-panel, body.dark-mode .guidance-panel { background:#171717; border-color:rgba(255,255,255,.12); }
+        .panel-title { color:var(--primary-dark); margin-bottom:20px; font-size: 1.4em; text-align: center; position: relative; padding-bottom: 10px; }
+        .panel-title:after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; }
+        body.dark-mode .panel-title { color:#bcd2ff; }
+        
+        /* تبويبات الأقسام */
+        .dept-tabs { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; justify-content:center; }
+        .dept-tab { padding:10px 20px; background:#e3f2fd; border:none; border-radius:25px; cursor:pointer; font-size:0.95em; color:var(--primary-dark); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 500; border: 2px solid transparent; }
+        .dept-tab.active { background:var(--primary); color:white; border-color: var(--primary-dark); box-shadow: 0 5px 15px rgba(0,112,192,0.3); }
+        .dept-tab:hover { transform:translateY(-2px); box-shadow: 0 5px 15px rgba(0,112,192,0.2); }
+        body.dark-mode .dept-tab { background:#2d4356; color:#cfe6ff; }
+        body.dark-mode .dept-tab.active { background:var(--secondary); color: #000; }
+
+        /* محتوى الأقسام */
+        .dept-content { display:none; animation: fadeIn 0.4s ease; }
+        .dept-content.active { display:block; }
+        
+        .dept-head {
+          background:linear-gradient(135deg,var(--primary) 0%, var(--secondary) 100%);
+          color:white; padding:15px 20px; border-radius:12px; margin-bottom:15px; text-align: center; box-shadow: var(--shadow);
+        }
+        .dept-head h4 { margin: 0; font-size: 1.3em; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+
+        /* شبكة الموظفين */
+        .staff-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:15px; margin-top:15px; }
+        .staff-card { background:white; padding:15px; border-radius:12px; border:2px solid #e0e0e0; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .staff-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        body.dark-mode .staff-card { background:#2a2a2a; border-color:#444; color:#eee; }
+        .staff-name { font-weight:bold; color:var(--primary-dark); margin-bottom:10px; font-size: 1.1em; }
+        body.dark-mode .staff-name { color:#bcd2ff; }
+        .staff-contact { font-size:0.9em; margin:8px 0; display: flex; align-items: center; gap: 8px; }
+        .staff-contact a { color:var(--primary); text-decoration:none; transition: color 0.3s ease; }
+        .staff-contact a:hover { text-decoration:underline; color: var(--secondary); }
+
+        /* شبكة الخدمات */
+        .service-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:15px; margin-top:15px; }
+        .service-card {
+          background:white; padding:20px; border-radius:15px; text-align:center;
+          border:2px solid #e3f2fd; transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+          cursor:pointer; position: relative; overflow: hidden;
+        }
+        .service-card:before {
+          content: ''; position: absolute; top: 0; left: -100%;
+          width: 100%; height: 100%; background: linear-gradient(90deg, 
+            transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s ease;
+        }
+        .service-card:hover:before { left: 100%; }
+        .service-card:hover { border-color:var(--primary); transform:translateY(-5px); box-shadow:0 15px 30px rgba(0,112,192,0.2); }
+        body.dark-mode .service-card { background:#2a2a2a; border-color:#444; }
+        body.dark-mode .service-card:hover { border-color:var(--secondary); }
+        
+        .service-icon { font-size:2.5em; margin-bottom:12px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); }
+        .service-title { font-weight:bold; color:var(--primary-dark); margin-bottom:8px; font-size: 1.1em; }
+        body.dark-mode .service-title { color:#bcd2ff; }
+        .service-desc { font-size:0.9em; color:#666; line-height: 1.4; }
+        body.dark-mode .service-desc { color:#bbb; }
+
+        /* النصائح المتحركة */
+        .tips-ticker {
+          background:linear-gradient(90deg, var(--primary), var(--secondary));
+          color:white; padding:15px; border-radius:12px; margin:25px 0;
+          overflow:hidden; position:relative; direction: ltr;
+          box-shadow: var(--shadow);
+        }
+        .tips-ticker:before {
+          content: '💡'; position: absolute; left: 15px; top: 50%;
+          transform: translateY(-50%); font-size: 1.5em; z-index: 2;
+        }
+        .ticker-content {
+          animation: scroll-rtl var(--ticker-duration, 30s) linear infinite;
+          white-space: nowrap; /* مهم */
+        }
+        @keyframes scroll-rtl { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .tips-ticker:hover .ticker-content { animation-play-state:paused; }
+
+        /* الإحصائيات */
+        .stats{
+          margin-top:20px;padding:15px;background:#f8f9fa;border-radius:12px;
+          font-size:0.95em;text-align:center; display:grid;
+          grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px;
+          box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+        body.dark-mode .stats{ background:#171717; color:#ddd; }
+        .stat-item { padding:12px; background:white; border-radius:8px; transition: transform 0.3s ease; position: relative; }
+        .stat-item:hover { transform: translateY(-2px); }
+        body.dark-mode .stat-item { background:#2a2a2a; }
+        .stat-value { font-size: 1.2em; font-weight: bold; margin-top: 5px; }
+        body.dark-mode .stat-value { color: var(--secondary); }
+
+        /* الجودة */
+        .quality-showcase {
+          margin-top:25px; padding:20px;
+          background:linear-gradient(135deg,var(--primary) 0%, var(--secondary) 100%); 
+          color:white; border-radius:15px; text-align:center;
+          box-shadow: var(--shadow); position: relative; overflow: hidden;
+        }
+        .quality-showcase:before {
+          content: ''; position: absolute; top: -50%; right: -50%;
+          width: 200%; height: 200%; opacity: 0.1;
+          background: radial-gradient(circle, white 0%, transparent 70%);
+          animation: rotate 20s linear infinite;
+        }
+        .quality-showcase h4 { margin:0 0 15px; position: relative; z-index: 2; font-size: 1.3em; }
+        .quality-tip { margin:0; font-size:1.1em; min-height:3em; display:flex; align-items:center; justify-content:center; position: relative; z-index: 2; line-height: 1.5; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideInUp { from { opacity:0; transform:translateY(50px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes expandIn { from { opacity:0; transform:scaleY(0.8); } to { opacity:1; transform:scaleY(1); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* استجابة */
+        @media (max-width: 768px) {
+          .container { padding: 15px; margin: 10px; }
+          .quick-icons { gap: 8px; }
+          .qi { padding: 8px 12px; font-size: 0.9em; }
+          .service-grid, .staff-grid { grid-template-columns: 1fr; }
+          .dept-tabs { gap: 5px; }
+          .dept-tab { padding: 8px 15px; font-size: 0.85em; }
+          .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+          .action-buttons { flex-direction: column; align-items: center; }
+          .theme-toggle { top: 10px; right: 10px; padding: 10px 15px; }
+        }
+        @media (max-width: 480px) {
+          .brand .logo { width: 80px; height: 80px; }
+          h1 { font-size: 1.8em; }
+          .subtitle { font-size: 0.9em; }
+          .stats { grid-template-columns: 1fr; }
+        }
+
+        /* طباعة */
+        @media print {
+          .theme-toggle, .quick-icons, .btn { display: none !important; }
+          body { background: white !important; color: black !important; }
+          .container { box-shadow: none !important; }
+          .trainer-info { background: #f0f0f0 !important; color: black !important; }
+        }
+
+        /* حالات لونية ديناميكية للإحصائيات */
+        .stat-item { position: relative; }
+        .stat-value { font-size: 1.2em; font-weight: 800; margin-top: 5px; }
+
+        .stat--ok   .stat-value { color: #51cf66; }   /* أخضر */
+        .stat--warn .stat-value { color: #ffd43b; }   /* أصفر */
+        .stat--err  .stat-value { color: #ff6b6b; }   /* أحمر */
+        .stat--info .stat-value { color: var(--primary); } /* أزرق عام */
+
+        .stat-trend { font-size:.85em; opacity:.85; margin-right:.25em; }
+
+
+
+        /* ===== Stats Pro ===== */
+        .stats-pro{
+          display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+          padding:14px; background:rgba(255,255,255,.65); border:1px solid rgba(0,0,0,.06);
+          border-radius:16px; box-shadow: var(--shadow);
+          backdrop-filter: blur(6px);
+        }
+        body.dark-mode .stats-pro{
+          background:#141414; border-color:#2a2a2a; box-shadow:0 10px 28px rgba(0,0,0,.35);
+        }
+
+        .sp-item{
+          background:#fff; border:1px solid #eef3f8; border-radius:14px; padding:12px 14px;
+          transition:transform .2s, box-shadow .2s;
+        }
+        .sp-item:hover{ transform:translateY(-2px); box-shadow:var(--shadow-hover); }
+        body.dark-mode .sp-item{ background:#1c1c1c; border-color:#2b2b2b; }
+
+        .sp-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+        .sp-icon{
+          width:28px; height:28px; display:grid; place-items:center; font-size:16px;
+          border-radius:8px; background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);
+          color:#fff; box-shadow:0 4px 12px rgba(0,112,192,.25);
+        }
+        .sp-title{ font-weight:700; color:var(--primary-dark); letter-spacing:.2px; }
+        body.dark-mode .sp-title{ color:#cfe1ff; }
+
+        .sp-value{
+          font-weight:800; font-size:1.4rem; color:#2c3e50;
+        }
+        body.dark-mode .sp-value{ color:#eaeaea; }
+
+        /* Chips للحالات */
+        .sp-chip{
+          display:inline-flex; align-items:center; gap:6px; font-weight:700; padding:8px 10px;
+          border-radius:999px; font-size:.98rem; border:1px solid transparent;
+        }
+        .sp-chip::before{ content:""; width:10px; height:10px; border-radius:50%; display:inline-block; }
+
+        .sp-chip[data-state="ok"]   { background:#e9f9ef; color:#1f8f4e; border-color:#bfead0; }
+        .sp-chip[data-state="ok"]::before{ background:#1f8f4e; }
+
+        .sp-chip[data-state="warn"] { background:#fff6db; color:#996c00; border-color:#ffe29a; }
+        .sp-chip[data-state="warn"]::before{ background:#f2b705; }
+
+        .sp-chip[data-state="err"]  { background:#ffe8e8; color:#b71d1d; border-color:#ffc7c7; }
+        .sp-chip[data-state="err"]::before{ background:#e03131; }
+
+        /* ترند اليوم */
+        .sp-today{ display:flex; align-items:baseline; gap:.35rem; }
+        .sp-trend{ font-weight:900; font-size:1.1rem; opacity:.9 }
+        .sp-trend.up   { color:#1f8f4e; }  /* ↑ */
+        .sp-trend.flat { color:#888; }     /* → */
+        .sp-trend.down { color:#e03131; }  /* ↓ */
+
+        /* استجابة أشد إحكامًا للموبايل */
+        @media (max-width:480px){
+          .sp-value{ font-size:1.2rem; }
+        }
+
+        /* --- توسيط كامل محتوى بطاقات الإحصائيات --- */
+        .stats-pro { text-align: center; }
+
+        .sp-item{
+          display: flex;
+          flex-direction: column;
+          align-items: center;     /* يوسط أفقيًا */
+          justify-content: center; /* يوسط عموديًا عند الحاجة */
+          text-align: center;
+        }
+
+        .sp-head{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center; /* يوسّط الأيقونة والعنوان */
+          gap: 8px;
+        }
+
+        .sp-value{ 
+          text-align: center;
+        }
+
+        .sp-chip{
+          display: inline-flex;
+          align-items: center;
+          justify-content: center; /* يوسّط الشيب بالكامل */
+        }
+
+        .sp-today{
+          display: inline-flex;
+          align-items: baseline;
+          justify-content: center; /* السهم + الرقم في الوسط */
+          gap: .35rem;
+        }
+
+        /* إن حبيت توسّط كمان بطاقات .stats القديمة */
+        .stats { text-align: center; }
+        .stat-item{
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:center;
+        }
+
+        /* ألوان مختلفة لشريط نصائح الاعتماد */
+      .tips-bar {
+        background: linear-gradient(90deg, #00ADEF, #0070C0);
+      }
+
+
+        /* مؤشر الرضا */
+        .quality-kpi{margin-top:18px;padding:18px;border-radius:14px;background:#fff;color:#2c3e50}
+        body.dark-mode .quality-kpi{background:#1c1c1c;color:#eaeaea}
+        .kpi-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:6px 0}
+        .kpi-label{font-weight:700}
+        .kpi-value{font-weight:800}
+        .kpi-progress{
+          background:#e9ecef;border-radius:999px;overflow:hidden;height:26px;position:relative;
+          box-shadow:inset 0 2px 6px rgba(0,0,0,.08)
+        }
+        .kpi-bar{
+          height:100%;width:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;
+          background:linear-gradient(90deg,#51cf66,#40c057);transition:width .7s ease
+        }
+        .kpi-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+        .kpi-btn{
+          border:none;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;color:#fff;
+          background:linear-gradient(135deg,var(--primary) 0%, var(--secondary) 100%);
+          box-shadow:0 10px 20px rgba(0,112,192,.25);transition:transform .2s, box-shadow .2s
+        }
+        .kpi-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(0,112,192,.35)}
+        #tipsKPIBarTop { display: none; }
+
+      </style>
+    </head>
+    <body>
+      <!-- Loading Overlay -->
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+          <div class="spinner-large"></div>
+          <p>🎉 أهلاً بك في منصة الدعم الأكاديمي – جاري التحميل...</p>
+        </div>
+      </div>
+
+      <div class="kpi-bar tips-bar" id="tipsKPIBarTop">—</div>
+
+      <button id="themeToggle" class="theme-toggle" aria-label="تبديل الوضع الليلي/النهاري" title="تبديل الوضع">🌙</button>
+
+    <div class="container" aria-live="polite">
+      <!-- الشعار + العنوان -->
+      <div class="brand">
+        <img src="logo.png" alt="شعار المؤسسة" class="logo" title="المؤسسة العامة للتدريب التقني والمهني" style="width:300px; height:auto;">
+        <h1>منصة الدعم الأكاديمي</h1>
+        <p class="subtitle">نظام متكامل للخدمات الإرشادية والأكاديمية</p>
+      </div>
+
+
+      <!-- ✅ داخل الـ .container -->
+      <div id="initiativeBox" class="departments-panel" style="display:none;min-height:140px">
+        <h3 class="panel-title">🧩 تعريف المبادرة</h3>
+        <div id="initiativeContent"></div>
+      </div>
+
+
+
+
+
+        <!-- شريط الخدمات الرئيسية -->
+      <div class="quick-icons">
+        <div class="qi" id="qi-mentor" title="التعرّف على المرشد المسؤول عنك"><span class="i">🧭</span><span>مرشدي التدريبي</span></div>
+        <div class="qi" id="qi-studentsAffairs" title="وكيل شؤون المتدربين"><span class="i">🧑‍🎓</span><span>وكيل شؤون المتدربين</span></div>
+        <div class="qi" id="qi-guidance" title="عرض وحدة الخدمات الارشادية"><span class="i">🎓</span><span>وحدة الخدمات الارشادية</span></div>
+        <div class="qi" id="qi-departments" title="عرض الأقسام التدريبية"><span class="i">👨‍🏫</span><span>الأقسام التدريبية</span></div>
+        <div class="qi" id="qi-quality" title="عرض مؤشرات الجودة"><span class="i">📊</span><span>الجودة</span></div>
+        <div class="qi" id="qi-nums" title="عرض أرقام تهمك"><span class="i">📞</span><span>أرقام تهمك</span></div>
+        <div class="qi" id="qi-library" title="المكتبة الرقمية"><span class="i">📚</span><span>المكتبة الرقمية</span></div>
+        <div class="qi" id="qi-support" title="مدير التدرب الإلكتروني"><span class="i">🧑‍💻</span><span>مدير التدرب الإلكتروني</span></div>
+        <div class="qi" id="qi-rafed" title="مبادرة رافد"><span class="i">🎓</span><span>مبادرة رافد</span></div>
+        <div class="qi" id="qi-voice" title="صوتك مسموع"><span class="i">🗣️</span><span>صوتك مسموع</span></div>
+        <div class="qi" id="qi-courses" title="بحث المقررات والشُعب"><span class="i">📘</span><span>المقررات والشُعب</span></div>
+        <div class="qi" id="qi-contact" title="معلومات الاتصال"><span class="i">📞</span><span>اتصل بنا</span></div>
+      </div>
+
+        <!-- فاصل واضح بين منطقة البحث ولوحات الخدمات -->
+        <div id="sections-start" class="ui-sep" role="separator" aria-label="لوحات الخدمات">
+          <span class="chip">لوحات الخدمات</span>
+        </div>
+
+        <!-- كرت البحث عن المرشد (يُظهر/يُخفى من الأيقونة) -->
+        <div id="mentorSearchCard" class="search-card" aria-label="بحث عن المرشد">
+          <form id="traineeForm">
+            <div class="form-group" style="margin-top:0">
+              <label for="traineeId">الرقم التدريبي أو اسم المرشد:</label>
+              <div class="search-container">
+                <input type="text" id="traineeId" placeholder="أدخل رقمك التدريبي أو اسم المرشد للبحث" autocomplete="off" />
+                <span class="search-icon">🔍</span>
+                <div id="searchSuggestions" class="search-suggestions" role="listbox"></div>
+              </div>
+            </div>
+            <button type="submit" class="btn" id="searchBtn"><span id="searchBtnText">🔍 ابحث عن المرشد</span></button>
+          </form>
+
+          <div class="message success" id="successMsg" role="alert"></div>
+          <div class="message error" id="errorMsg" role="alert"></div>
+          <div class="message warning" id="warningMsg" role="alert"></div>
+        </div>
+
+
+
+        <!-- معلومات المرشد -->
+        <div class="trainer-info" id="trainerInfo">
+          <h3>🎯 معلومات المرشد المخصص لك</h3>
+          <div class="info-item"><strong>اسم المرشد:</strong> <span id="mentorName"></span></div>
+          <div class="info-item"><strong>رقم المكتب:</strong> <span id="trainerOffice"></span></div>
+          <div class="info-item"><strong>حساب التليجرام:</strong> <span id="trainerAccountContainer"></span></div>
+          <div class="info-item"><strong>البريد الإلكتروني:</strong> <span id="trainerEmailContainer"></span></div>
+          <div class="info-item">
+            <strong>مجموعة الإرشاد:</strong>
+            <div>
+              <a href="#" id="mentorGroupLink" target="_blank" style="display:none;" rel="noopener">👥 انضم للمجموعة</a>
+              <span id="noMentorGroup" class="non-clickable">غير متوفرة حاليًا</span>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="share-btn" onclick="shareTrainerInfo()" title="مشاركة معلومات المرشد">📤 مشاركة</button>
+            <button class="share-btn" onclick="printTrainerInfo()" title="طباعة معلومات المرشد">🖨️ طباعة</button>
+            <button class="share-btn" onclick="saveToContacts()" title="حفظ في جهات الاتصال">📱 حفظ</button>
+          </div>
+        </div>
+
+        <!-- لوحة الخدمات الإرشادية -->
+        <div id="guidancePanel" class="guidance-panel">
+          <h3 class="panel-title">🎓 وحدة الخدمات الإرشادية</h3>
+          <div class="service-grid">
+            <div class="service-card" onclick="openWhatsApp('966144510265')" title="تواصل عبر الواتساب">
+              <div class="service-icon">📱</div>
+              <div class="service-title">وحدة الخدمات الإرشادية</div>
+              <div class="service-desc">تواصل مباشر عبر الواتساب للاستفسارات والمساعدة</div>
+            </div>
+              <div class="service-card" onclick="openTelegram('Ahmedrajeh')" title="حساب التليجرام للتواصل">
+                <div class="service-icon">💬</div>
+                <div class="service-title">حساب التليجرام للتواصل</div>
+                <div class="service-desc">@Ahmedrajeh</div>
+              </div>
+                <div class="service-card" onclick="window.open(STUDENT_GUIDE_URL,'_blank','noopener')" title="دليل المتدرب الإلكتروني">
+                  <div class="service-icon">📘</div>
+                  <div class="service-title">دليل المتدرب الإلكتروني</div>
+                  <div class="service-desc">ملف إرشادي شامل (رابط مباشر)</div>
+                </div>
+          </div>
+        </div>
+
+
+        <!-- NEW: لوحة وكيل شؤون المتدربين -->
+      <div id="studentsAffairsPanel" class="departments-panel">
+        <h3 class="panel-title">🧑‍🎓 وكيل شؤون المتدربين</h3>
+        <div class="service-grid">
+          <!-- واتساب -->
+          <div class="service-card" onclick="openWhatsApp('+966144510265')" title="التواصل عبر واتساب">
+            <div class="service-icon">📱</div>
+            <div class="service-title">رقم الواتساب</div>
+            <div class="service-desc">+966144510265</div>
+          </div>
+
+          <!-- تليجرام -->
+          <div class="service-card" onclick="openTelegram('m_al3mrni')" title="حساب التليجرام">
+          <div class="service-icon">💬</div>
+          <div class="service-title">حساب التليجرام</div>
+          <div class="service-desc">@m_al3mrni</div>
+        </div>
+
+
+          <!-- بريد إلكتروني -->
+          <div class="service-card" onclick="window.location='mailto:m.alamrani@tvtc.gov.sa'" title="البريد الإلكتروني">
+            <div class="service-icon">✉️</div>
+            <div class="service-title">البريد الإلكتروني</div>
+            <div class="service-desc">m.alamrani@tvtc.gov.sa</div>
+          </div>
+        </div>
+      </div>
+
+        
+                <!-- لوحة الخدمات الإرشادية -->
+      <div id="numberPanel" class="departments-panel">
+        <h3 class="panel-title">📞 أرقام تهمك</h3>
+        <div class="service-grid">
+          <div class="service-card" onclick="window.open('tel:00966566872115')" title="الاتصال بمنسق السلامة">
+            <div class="service-icon">🦺</div>
+            <div class="service-title">منسق السلامة والصحة المهنية</div>
+            <div class="service-desc">م. عبدالعزيز العمري — 00966566872115</div>
+          </div>
+
+          <div class="service-card" onclick="window.open('tel:997')" title="الاتصال بالإسعاف">
+            <div class="service-icon">🚑</div>
+            <div class="service-title">الإسعاف</div>
+            <div class="service-desc">997 (اتصال مباشر)</div>
+          </div>
+
+          <div class="service-card" onclick="window.open('tel:998')" title="الاتصال بالدفاع المدني">
+            <div class="service-icon">🚒</div>
+            <div class="service-title">الدفاع المدني</div>
+            <div class="service-desc">998 (اتصال مباشر)</div>
+          </div>
+
+          <div class="service-card" onclick="window.open('tel:999')" title="الاتصال بالشرطة">
+            <div class="service-icon">👮‍♂️</div>
+            <div class="service-title">الشرطة</div>
+            <div class="service-desc">999 (اتصال مباشر)</div>
+          </div>
+
+          <div class="service-card" onclick="window.open('tel:911')" title="الطوارئ الموحد">
+            <div class="service-icon">📞</div>
+            <div class="service-title">الطوارئ الموحد</div>
+            <div class="service-desc">911 (اتصال مباشر)</div>
+          </div>
+        </div> <!-- /service-grid -->
+      </div>   <!-- /numberPanel -->
+
+
+
+
+      <div id="libraryPanel" class="departments-panel">
+        <h3 class="panel-title">📚 المكتبة الرقمية</h3>
+        <div class="service-grid">
+          <div class="service-card" onclick="showCalendar()" title="عرض التقويم الأكاديمي">
+            <div class="service-icon">📅</div>
+            <div class="service-title">التقويم الأكاديمي</div>
+            <div class="service-desc">مواعيد مهمة واختبارات وإجازات</div>
+          </div>
+          <div class="service-card" onclick="showLibrary()" title="الوصول للمكتبة الرقمية">
+            <div class="service-icon">📚</div>
+            <div class="service-title">المكتبة الرقمية</div>
+            <div class="service-desc">مصادر تعليمية وكتب إلكترونية</div>
+          </div>
+          <div class="service-card" onclick="showReferences()" title="الخطط التدريبية والمراجع">
+          <div class="service-icon">🗂️</div>
+          <div class="service-title">الخطط التدريبية والمراجع</div>
+          <div class="service-desc">مراجع المقررات وخطط التدريبية للاقسام</div>
+        </div>
+        </div>
+      </div>
+
+
+      <div id="coursesPanel" class="departments-panel">
+        <h3 class="panel-title">📘 المقررات والشُعب</h3>
+
+        <form id="courseForm" class="form-group" style="margin-top:0">
+          <label for="courseSection">ابحث برقم الشعبة (CRN):</label>
+          <div class="search-container">
+            <input type="text" id="courseSection" placeholder="مثال: 32451" autocomplete="off" />
+            <span class="search-icon">🔎</span>
+            <div id="courseSearchSuggestions" class="search-suggestions" role="listbox"></div>
+          </div>
+          <button type="submit" class="btn" id="courseSearchBtn">🔍 بحث المقرر</button>
+        </form>
+
+        <div id="courseResult" style="display:none; margin-top:15px;">
+          <!-- يتم تعبئته بالجاڤاسكربت -->
+        </div>
+      </div>
+
+
+      <!-- ✅ داخل منطقة لوحات الخدمات (تحت الفاصل) -->
+      <div id="rafedPanel" class="departments-panel" style="display:none">
+        <h3 class="panel-title">🎓 مبادرة رافد</h3>
+        <div id="rafedDesc" style="margin-bottom:16px; line-height:1.8"></div>
+        <div class="service-grid">
+          <div class="service-card" title="افتح رافد">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+              <a id="rafedQrLink" href="#" target="_blank" rel="noopener" aria-label="فتح رافد عبر الباركود">
+                <img id="rafedQrImage" src="" alt="باركود مبادرة رافد" class="qr-img">
+              </a>
+              <div class="service-title">امسح الباركود أو اضغط عليه</div>
+              <div class="service-desc">ينقلك إلى صفحة رافد</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- لوحة الأقسام التدريبية -->
+        <div id="departmentsPanel" class="departments-panel">
+          <h3 class="panel-title">🏢 الأقسام التدريبية</h3>
+          <div class="dept-tabs">
+            <button class="dept-tab active" data-dept="computer">قسم الحاسب وتقنية المعلومات</button>
+            <button class="dept-tab" data-dept="electronics">قسم التقنية الإلكترونية</button>
+            <button class="dept-tab" data-dept="general">قسم الدراسات العامة</button>
+          </div>
+
+          <!-- قسم الحاسب -->
+          <div class="dept-content active" id="computer">
+            <div class="dept-head"><h4>💻 قسم الحاسب وتقنية المعلومات</h4></div>
+              <div class="staff-grid">
+
+                <div class="staff-card">
+                  <div class="staff-name">🏆 عبدالله محمد باخشوين – رئيس قسم تدريبي</div>
+                  <div class="staff-contact">📧 <a href="mailto:abakhashwain@tvtc.gov.sa">abakhashwain@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/amab27211" target="_blank" rel="noopener">@amab27211</a></div>
+                </div>
+
+
+                <div class="staff-card">
+                  <div class="staff-name">عبدالعزيز سعود العمري</div>
+                  <div class="staff-contact">📧 <a href="mailto:abdualaziza@tvtc.gov.sa">abdualaziza@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/AZIZalamri" target="_blank" rel="noopener">@AZIZalamri</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">عبدالله عبدالرحمن الوقداني</div>
+                  <div class="staff-contact">📧 <a href="mailto:abdullaha39@tvtc.gov.sa">abdullaha39@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Abdullaha39" target="_blank" rel="noopener">@Abdullaha39</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">خالد عوض عواض الحارثي</div>
+                  <div class="staff-contact">📧 <a href="mailto:khalharthi@tvtc.gov.sa">khalharthi@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/khaledAlharthi" target="_blank" rel="noopener">@khaledAlharthi</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">بندر سالم المالكي</div>
+                  <div class="staff-contact">📧 <a href="mailto:b.almalki1@tvtc.gov.sa">b.almalki1@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/balmalki1" target="_blank" rel="noopener">@balmalki1</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">عزام معتوق الحارثي</div>
+                  <div class="staff-contact">📧 <a href="mailto:azzama1@tvtc.gov.sa">azzama1@tvtc.gov.sa</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">يوسف عبدالله ملي</div>
+                  <div class="staff-contact">📧 <a href="mailto:ymalli@tvtc.gov.sa">ymalli@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/ymalli100" target="_blank" rel="noopener">@ymalli100</a></div>
+                </div>
+              </div>
+          </div>
+
+          <!-- قسم التقنية الإلكترونية -->
+          <div class="dept-content" id="electronics">
+            <div class="dept-head"><h4>⚡ قسم التقنية الإلكترونية</h4></div>
+            <div class="staff-grid">
+
+                <div class="staff-card">
+                  <div class="staff-name">🏆 معاذ صالح الشريف  – رئيس قسم تدريبي</div>
+                  <div class="staff-contact">📧 <a href="mailto:muath.a2@tvtc.gov.sa">muath.a2@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/muath_alsharifi" target="_blank" rel="noopener">@muath_alsharifi</a></div>
+                </div>
+
+
+                <div class="staff-card">
+                  <div class="staff-name">🎓 سمير محمد هوساوي – عميد</div>
+                  <div class="staff-contact">📧 <a href="mailto:sameer.h@tvtc.gov.sa">sameer.h@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Sameer_Hawsawi" target="_blank" rel="noopener">@Sameer_Hawsawi</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">فهد عبدالله محمد صالح</div>
+                  <div class="staff-contact">📧 <a href="mailto:fahadsaleh@tvtc.gov.sa">fahadsaleh@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/EngFahadSaleh" target="_blank" rel="noopener">@EngFahadSaleh</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">عماد عبدالله الثقفي</div>
+                  <div class="staff-contact">📧 <a href="mailto:emad.a3@tvtc.gov.sa">emad.a3@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/eng_Emad" target="_blank" rel="noopener">@eng_Emad</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">سعود عبدالعزيز الربيع</div>
+                  <div class="staff-contact">📧 <a href="mailto:s.alrubayyi@tvtc.gov.sa">s.alrubayyi@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Eng_Saud" target="_blank" rel="noopener">@Eng_Saud</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">زياد حسين عطيه اللهيبي</div>
+                  <div class="staff-contact">📧 <a href="mailto:ziyada1@tvtc.gov.sa">ziyada1@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Ziyad5511" target="_blank" rel="noopener">@Ziyad5511</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">تركي محمد الدوسري</div>
+                  <div class="staff-contact">📧 <a href="mailto:turkid@tvtc.gov.sa">turkid@tvtc.gov.sa</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">مروان محفوظ احمد جمال</div>
+                  <div class="staff-contact">📧 <a href="mailto:marwan.j@tvtc.gov.sa">marwan.j@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/EngMarwanJamal" target="_blank" rel="noopener">@EngMarwanJamal</a></div>
+                </div>
+              </div>
+
+          </div>
+
+          <!-- قسم الدراسات العامة -->
+          <div class="dept-content" id="general">
+            <div class="dept-head"><h4>📚 قسم الدراسات العامة</h4></div>
+            <div class="staff-grid">
+
+                <div class="staff-card">
+                  <div class="staff-name">🏆 ياسر أحمد حسين شولان – رئيس قسم تدريبي</div>
+                  <div class="staff-contact">📧 <a href="mailto:yasirs@tvtc.gov.sa">yasirs@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Yasirshaw1" target="_blank" rel="noopener">@Yasirshaw1</a></div>
+                </div>
+
+
+                <div class="staff-card">
+                  <div class="staff-name">فهد سعيد الصاعدي</div>
+                  <div class="staff-contact">📧 <a href="mailto:fahad.a11@tvtc.gov.sa">fahad.a11@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Fahad_alsaedi" target="_blank" rel="noopener">@Fahad_alsaedi</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">نوار ساعد الثبيتي</div>
+                  <div class="staff-contact">📧 <a href="mailto:n.althoubaiti@tvtc.gov.sa">n.althoubaiti@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/nawar_33" target="_blank" rel="noopener">@nawar_33</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">محمد سعد العمرني</div>
+                  <div class="staff-contact">📧 <a href="mailto:m.alamrani@tvtc.gov.sa">m.alamrani@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/m_al3mrni" target="_blank" rel="noopener">@m_al3mrni</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">احمد راجح العتيبي</div>
+                  <div class="staff-contact">📧 <a href="mailto:a.alotaibi9@tvtc.gov.sa">a.alotaibi9@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Ahmedrajeh" target="_blank" rel="noopener">@Ahmedrajeh</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">عبدالله عويد الشمري</div>
+                  <div class="staff-contact">📧 <a href="mailto:abalshammari@tvtc.gov.sa">abalshammari@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/abalshammari" target="_blank" rel="noopener">@abalshammari</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">خالد مهنا العتيبي</div>
+                  <div class="staff-contact">📧 <a href="mailto:kalotabay@tvtc.gov.sa">kalotabay@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/Kalotaba" target="_blank" rel="noopener">@Kalotaba</a></div>
+                </div>
+
+                <div class="staff-card">
+                  <div class="staff-name">احمد سليمان الحويطي</div>
+                  <div class="staff-contact">📧 <a href="mailto:ahmed.a13@tvtc.gov.sa">ahmed.a13@tvtc.gov.sa</a></div>
+                  <div class="staff-contact">📱 <a href="https://t.me/math1111111111" target="_blank" rel="noopener">@math1111111111</a></div>
+                </div>
+              </div>
+          </div>          
+        </div>
+
+          <!-- لوحة وكالة الجودة -->
+          <div id="qualityPanel" class="departments-panel">
+            <h3 class="panel-title">🏅 وكالة الجودة</h3>
+
+            
+            <div class="quality-showcase" style="margin-bottom:15px">
+              <h4>📊 مؤشر رضا المتدربين</h4>
+              <p id="qualityTipText" class="quality-tip">—</p>
+              <div class="quality-kpi">
+                <div class="kpi-row">
+                  <div class="kpi-label">نسبة الرضا الحالية</div>
+                  <div class="kpi-value" id="kpiPercText">—</div>
+                </div>
+                <div class="kpi-progress" aria-label="Progress">
+                  <div class="kpi-bar" id="kpiBar">—</div>
+                </div>
+                <div class="kpi-actions">
+                  <button class="kpi-btn" onclick="openIdeaForm()">💡 شارك بفكرة لتحسين الجودة</button>
+                  <button class="kpi-btn" onclick="openSurvey()">📝 شارك في الاستبيان</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="service-grid">
+              <div class="service-card" title="كيف تُستخدم الاستبيانات؟">
+                <div class="service-icon">📋</div>
+                <div class="service-title">أهمية تعبئة الاستبيانات</div>
+                <div class="service-desc">تحليلك يقود قرارات تحسين فعلية (خطة تحسين، تطوير محتوى، دعم إضافي).</div>
+              </div>
+              <div class="service-card" title="أمثلة تطبيقية">
+                <div class="service-icon">🔧</div>
+                <div class="service-title">تحسينات مبنية على آرائكم</div>
+                <div class="service-desc">تعديل جداول المراجعة، تحديث ملفات المقرر، وتفعيل قنوات دعم سريعة.</div>
+              </div>
+              <div class="service-card" title="الالتزام بالسلامة">
+                <div class="service-icon">🛡️</div>
+                <div class="service-title">السلامة وجودة التجربة</div>
+                <div class="service-desc">الجودة تشمل بيئة آمنة ونظيفة ومعامل جاهزة للتدريب العملي.</div>
+              </div>
+              <div class="service-card" title="الشفافية">
+                <div class="service-icon">🔎</div>
+                <div class="service-title">شفافية النتائج</div>
+                <div class="service-desc">نشر ملخصات دورية لمستوى الرضا والإجراءات المتخذة.</div>
+              </div>
+            </div>
+            <div class="quality-showcase" style="margin-top:15px">
+              <h4>💡 نصائح الاعتماد والجودة</h4>
+
+              <!-- نص النصيحة -->
+              <p id="tipsKPIText" class="quality-tip">—</p>
+
+              <!-- شريط تقدّم لكل نصيحة -->
+              <div class="kpi-progress" style="margin-top:10px">
+                <div class="kpi-bar" id="tipsKPIBar">—</div>
+              </div>
+            </div>
+          </div>
+
+      
+              <!-- لوحة مدير التدرب الالكتروني -->
+      <div id="supportPanel" class="departments-panel">
+        <h3 class="panel-title">🛠️ 🧑‍💻 مدير التدرب الإلكتروني</h3>
+        <div class="service-grid">
+          <div class="service-card" onclick="openTelegram('khaledAlharthi')" title="تواصل عبر التليجرام">
+            <div class="service-icon">💬</div>
+            <div class="service-title">قناة الدعم</div>
+            <div class="service-desc">إعلانات وتنبيهات الأعطال</div>
+          </div>
+          <div class="service-card" onclick="alert('البريد: lmsadminhlct@tvtc.gov.sa')" title="إرسال بريد">
+            <div class="service-icon">✉️</div>
+            <div class="service-title">بريد الدعم</div>
+            <div class="service-desc">lmsadminhlct@tvtc.gov.sa</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- لوحة اتصل بنا -->
+      <div id="contactPanel" class="departments-panel">
+        <h3 class="panel-title">📞 اتصل بنا</h3>
+        <div class="service-grid">
+          <div class="service-card" onclick="window.location='mailto:HLCT@tvtc.gov.sa'">
+            <div class="service-icon">✉️</div>
+            <div class="service-title">البريد العام</div>
+            <div class="service-desc">HLCT@tvtc.gov.sa</div>
+          </div>
+          <div class="service-card" onclick="window.open('tel:+966144510265')">
+            <div class="service-icon">☎️</div>
+            <div class="service-title">الهاتف</div>
+            <div class="service-desc">+966144510265</div>
+          </div>
+          <div class="service-card" onclick="openTelegram('EngFahadSaleh')" title="تواصل عبر التليجرام">
+            <div class="service-icon">👨‍🏫</div>
+            <div class="service-title">الدعم الفني للموقع</div>
+            <div class="service-desc">الانتقال الى الدعم الفني</div>
+          </div>
+        </div>
+      </div>
+
+        <div id="tickerSeparator" class="ui-sep" role="separator" aria-label="نصائح ودعم">
+          <span class="chip">توجيهات إرشادية</span>
+        </div>
+
+        <!-- النصائح المتحركة -->
+        <div class="tips-ticker" title="انتظر لمشاهدة النصائح المختلفة">
+          <div class="ticker-content" id="tickerText"></div>
+        </div>
+
+
+        <!-- الإحصائيات -->
+      <div class="stats-pro" dir="rtl">
+        <div class="sp-item">
+          <div class="sp-head">
+            <span class="sp-icon">📅</span>
+            <span class="sp-title">تاريخ آخر تحديث</span>
+          </div>
+          <div class="sp-value" id="sp-lastUpdate">—</div>
+        </div>
+
+        <div class="sp-item">
+          <div class="sp-head">
+            <span class="sp-icon">🌐</span>
+            <span class="sp-title">حالة النظام</span>
+          </div>
+          <div class="sp-chip" id="sp-system" data-state="ok">متصل</div>
+        </div>
+
+        <div class="sp-item">
+          <div class="sp-head">
+            <span class="sp-icon">📊</span>
+            <span class="sp-title">قاعدة البيانات</span>
+          </div>
+          <div class="sp-chip" id="sp-db" data-state="ok">محدّثة</div>
+        </div>
+
+        <div class="sp-item">
+          <div class="sp-head">
+            <span class="sp-icon">👥</span>
+            <span class="sp-title">عدد المسجلين</span>
+          </div>
+          <div class="sp-value" id="sp-registered">—</div>
+        </div>
+
+        <div class="sp-item">
+          <div class="sp-head">
+            <span class="sp-icon">🧑‍🤝‍🧑</span>
+            <span class="sp-title">إجمالي الزوار</span>
+          </div>
+          <div class="sp-value" id="sp-total">—</div>
+        </div>
+
+        <div class="sp-item">
+          <div class="sp-head">
+            <span class="sp-icon">👤</span>
+            <span class="sp-title">زوار اليوم</span>
+          </div>
+          <div class="sp-value sp-today" id="sp-today">
+            <span class="sp-trend" id="sp-trend">→</span><span id="sp-todayNum">—</span>
+          </div>
+        </div>
+      </div>
+
+
+        <script>
+        function toggleSearchBox(){
+          const box = document.getElementById("searchBox");
+          box.style.display = (box.style.display === "none" ? "block" : "none");
+        }
+</script>
+        
+    <script>
+    /* إعداد Google Sheets - تأكد أن الورقة "عامّة" للقراءة */
+    const GOOGLE_SHEETS_CONFIG = {
+      sheetId: "1xKt-BapW_0XRSE2Ci_CrnoAdxsQy4VbH4X9o_5hHmvw",
+      gid: 0,
+      fallbackDelay: 3000
+    };
+
+
+    // قسم المتغيرات ( حيث يمكن تغيير الرابط بناء على المطلوب ) 
+
+
+    // واجهة إحصائية الزوار (Google Apps Script Web App)
+    const VISIT_API_URL = "https://script.google.com/macros/s/AKfycbypZzeGayJNP1Wqq_zVVKR2hS7_NtxfsMfJyJsKXxDjkYmf8MrF6OKfUIbQfV_Nhq492w/exec"; // ضع رابطك هنا
+
+    // ضع رابط التقويم هنا
+    const ACADEMIC_CALENDAR_URL = "https://mttvtcedu-my.sharepoint.com/:b:/g/personal/fahadsaleh_tvtc_gov_sa/EX2TljComg1PvVu8Tkm0I3sBjry7zeI0N7WKkcshbp8mdQ?e=fR7lAv";
+
+    // ضع رابط المراجع والخطط التدريبية هنا
+   const REFERENCES_URL  = "https://mttvtcedu-my.sharepoint.com/:f:/g/personal/fahadsaleh_tvtc_gov_sa/Ej6EIwJ6h0ZIpy4cOY1UPoQB9NusnDgppl3ydRFEikaDIA";
+
+    // ضع رابط المكتبة الرقمية هنا
+    const DIGITAL_LIBRARY_URL = "https://elearning.edu.sa/olib/";
+    
+    //رابط ملف المتدرب الالكتروني 
+    const STUDENT_GUIDE_URL = "https://mttvtcedu-my.sharepoint.com/:b:/g/personal/fahadsaleh_tvtc_gov_sa/EXibvrNI17FMiIz2DlYra0YBoCIiYu7QY0UrQPQ3jPPfgg?e=SRAc2M"; // ضع رابط ملف الدليل المباشر هنا
+
+
+
+
+    // فيما يخص مبادره رافد
+    const RAFED_URL   = "";              // ← ضع هنا الرابط الصحيح لاحقاً (https://...)
+    const RAFED_QR_IMG = "rafed-qr.png"; // تأكد من وجود الصورة في نفس المجلد
+
+
+// فيما يخص مبادره صوتك مسموع
+    const VOICE_URL = "https://forms.gle/4C5VxQPaNfjnPRAY6"; // ضع رابط نموذج صوتك مسموع
+
+
+
+    // إعداد ورقة المقررات (استخدم نفس sheetId، وغيّر gid لورقة "المقررات")
+        const COURSES_CONFIG = {
+          sheetId: "1xKt-BapW_0XRSE2Ci_CrnoAdxsQy4VbH4X9o_5hHmvw", // أو ضع sheetId مختلف لو كانت بورقة ثانية
+          gid: 2012741450                          // ← استبدلها بـ gid لورقة المقررات
+        };
+
+
+
+                /* ===== وكالة الجودة: روابط ونسبة افتراضية ===== */
+        const IDEA_FORM_URL   = "https://forms.office.com/your-idea-form";   // ← رابط نموذج "شارك بفكرة"
+        const SURVEY_URL      = "https://forms.office.com/your-satisfaction"; // ← رابط استبيان الرضا
+        let   SATISFACTION_PERC = 95;  // نسبة افتراضية (يمكن جلبها من Google Sheets لاحقًا)
+
+        /* افتح النماذج */
+        function openIdeaForm(){
+          if(!IDEA_FORM_URL) return alert("لم يتم إعداد رابط نموذج الأفكار بعد.");
+          window.open(IDEA_FORM_URL, "_blank", "noopener");
+        }
+        function openSurvey(){
+          if(!SURVEY_URL) return alert("لم يتم إعداد رابط الاستبيان بعد.");
+          window.open(SURVEY_URL, "_blank", "noopener");
+        }
+
+        /* تهيئة المؤشر عند التحميل */
+        function initQualityKPI(perc){
+          const p = Math.max(0, Math.min(100, Number(perc)||0));
+          const bar = document.getElementById("kpiBar");
+          const txt = document.getElementById("kpiPercText");
+          if(!bar || !txt) return;
+          txt.textContent = p.toFixed(0) + "%";
+          bar.textContent = p.toFixed(0) + "%";
+          requestAnimationFrame(()=>{ bar.style.width = p + "%"; });
+        }
+
+        /* نداء داخل initializeApp بعد التحميل */
+        document.addEventListener("DOMContentLoaded", ()=>{
+          // يمكنك لاحقًا استبدال SATISFACTION_PERC بقيمة من Google Sheets
+          initQualityKPI(SATISFACTION_PERC);
+        });
+
+    /* الحالة العامة */
+    let trainersData = {};
+    let isDataLoaded = false;
+    let stats = { today: 0, total: 0, last: "---" };
+    let coursesBySection = {};   // فهرس برقم الشعبة → سجل المقرر
+    let sectionList = [];        // لإظهار الاقتراحات
+
+
+          // نصوص المبادرة
+      document.getElementById("initiativeContent").innerHTML =
+        "مبادرة <strong>رافد</strong> تهدف لتمكين المتدربين من الوصول السريع للدعم الأكاديمي والخدمات الإرشادية عبر قناة موحّدة.";
+
+      document.getElementById("rafedDesc").innerHTML =
+        "انطلق الآن مع <strong>مبادرة رافد</strong>: منصة مبسطة لتوحيد القنوات الإرشادية وتسهيل الوصول للمدربين والموارد.";
+
+      // مساعد للتحقق من URL صالح https
+      function isValidHttpsUrl(u){
+        try {
+          const x = new URL(u);
+          return x.protocol === "https:";
+        } catch { return false; }
+      }
+
+      // تهيئة رافد: ضبط الرابط والصورة وتفعيل الكرت
+      (function initRafed(){
+        const rafedLinkEl = document.getElementById("rafedQrLink");
+        const rafedImgEl  = document.getElementById("rafedQrImage");
+
+        if (rafedImgEl && RAFED_QR_IMG) rafedImgEl.src = RAFED_QR_IMG;
+
+        if (rafedLinkEl) {
+          if (isValidHttpsUrl(RAFED_URL)) {
+            rafedLinkEl.href = RAFED_URL;
+          } else {
+            rafedLinkEl.removeAttribute("href");
+            rafedLinkEl.addEventListener("click", (e) => {
+              e.preventDefault();
+              alert("لم يتم إعداد رابط رافد بعد. يرجى تزويدنا بالرابط الصحيح.");
+            });
+          }
+        }
+      })();
+
+
+    /* نصائح للمتدربين */
+    const tips = [
+      "⏰ نسبة الغياب المسموح بها هي 20% فقط فاحرص على الانضباط وعدم التأخر",
+      "📌 يتم احتساب الغياب من أول محاضرة فلا تستهين بالحضور المبكر",
+      "🙋‍♂️ استشر مرشدك التدريبي دائماً فهو حريص على مساعدتك",
+      "📈 التزامك بالحضور يساهم في رفع معدلك التدريبي وفهمك للمقرر",
+      "📚 استعد للاختبارات بالمراجعة اليومية وعدم تأجيل المذاكرة",
+      "🛠️ أحضر أدواتك (قلم، آلة حاسبة، أدوات هندسية) قبل كل اختبار",
+      "⌛ احرص على التواجد قبل موعد الاختبار بـ 15 دقيقة",
+      "❓ درّب نفسك بطرح أسئلة متوقعة للإعداد الجيد للاختبار",
+      "💪 تفاءل بالنجاح وضع هدفك تحقيق الدرجة الكاملة",
+      "🙏 استعن بالله عند بدء الاختبار وكن مطمئناً",
+      "📖 اقرأ الأسئلة بعناية وابدأ بالسهلة أولاً",
+      "📝 راجع إجاباتك بدقة قبل تسليم ورقة الاختبار",
+      "🤝 اسأل مدرب المقرر عن النقاط الصعبة لتسهيل الاستعداد",
+      "🎯 حافظ على انضباطك داخل القاعة أو المعمل أثناء الاختبارات"
+    ];
+
+    /* نصائح الجودة (عرض تناوبي) */
+    const qualityTips = [
+      "المؤسسة العامة للتدريب التقني والمهني تطبق نظم جودة معتمدة دولياً.",
+      "التحسين المستمر جزء أساسي من ثقافة الجودة لدى وحدات التدريب.",
+      "الشراكات مع القطاع الخاص تعزز مواءمة المخرجات مع سوق العمل.",
+      "التغذية الراجعة من المتدربين تُستخدم لتحسين الخدمات والبرامج.",
+      "الالتزام بمعايير السلامة والصحة المهنية في جميع المرافق.",
+      "توسيع القنوات الرقمية يرفع من جودة تجربة المتدرب."
+    ];
+
+    // نصائح الاعتماد المؤسسي
+    const accreditationTips = [
+      "وثّق السياسات والإجراءات وحدثها دورياً.",
+      "أثبت فاعلية الحوكمة والمؤشرات المرتبطة بها.",
+      "اربط المخرجات التعليمية بأدلة قياس معتمدة.",
+      "أظهر مواءمة البرامج مع سوق العمل والشراكات.",
+      "حسّن خدمات الدعم الأكاديمي بناءً على تغذية راجعة."
+    ];
+
+    /* عند تحميل الصفحة */
+    document.addEventListener("DOMContentLoaded", () => {
+      showLoadingOverlay();
+      initializeApp();
+    });
+
+
+        function getVisitorId() {
+      const KEY = "hlct_visitor_id";
+      let id = localStorage.getItem(KEY);
+      if (!id) {
+        id = (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + Math.random().toString(36).slice(2)));
+        localStorage.setItem(KEY, id);
+      }
+      return id;
+    }
+
+    async function trackVisitAndUpdateCounts() {
+      if (!VISIT_API_URL) return;
+      try {
+        const url = `${VISIT_API_URL}?uid=${encodeURIComponent(getVisitorId())}&ua=${encodeURIComponent(navigator.userAgent)}`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error("visit api failed");
+        const data = await res.json();
+
+        // إجمالي وزوار اليوم (واجهة Stats Pro)
+        const fmt = (n) => Number(n || 0).toLocaleString("ar-SA");
+        const totalUnique = Number(data.totalUnique || 0);
+        const todayUnique = Number(data.todayUnique || 0);
+
+        const totalEl = document.getElementById("sp-total");
+        if (totalEl) totalEl.textContent = fmt(totalUnique);
+
+        // ترند اليوم مقارنةً بالتخزين المحلي
+        const TODAY_KEY = "hlct_today_date";
+        const COUNT_KEY = "hlct_today_count";
+        const todayStr  = new Date().toISOString().slice(0,10);
+        const prevDate  = localStorage.getItem(TODAY_KEY);
+        const prevCount = Number(localStorage.getItem(COUNT_KEY) || 0);
+
+        updateToday(todayUnique, (prevDate === todayStr ? prevCount : null));
+
+        localStorage.setItem(TODAY_KEY, todayStr);
+        localStorage.setItem(COUNT_KEY, String(todayUnique));
+
+        // آخر تحديث
+        const last = data.lastUpdate || new Date().toLocaleString("ar-SA");
+        const lu = document.getElementById("sp-lastUpdate");
+        if (lu) lu.textContent = last;
+
+      } catch (e) {
+        console.error("visit api failed:", e);
+      }
+    }
+
+
+
+
+
+    /* تهيئة التطبيق */
+async function initializeApp() {
+  try {
+    await initializeData();
+    await initializeCoursesData();
+
+    updateSystemStats();
+    startTickerRotation();
+    startQualityTipsRotation(); // تبقى هنا فقط
+
+    // ✅ تشغيل نصائح الاعتماد داخل لوحة الجودة
+    const tipsTextEl = document.querySelector('#qualityPanel #tipsKPIText');
+    const tipsBarEl  = document.querySelector('#qualityPanel #tipsKPIBar');
+    if (tipsTextEl && tipsBarEl) {
+      initTipsKPI({
+        tips: accreditationTips,
+        textEl: tipsTextEl,
+        barEl: tipsBarEl,
+        duration: 6000
+      });
+    }
+
+    setupEventListeners();
+    toggleMentorSearch(true);
+    setupServiceWorker();
+    trackVisitAndUpdateCounts();
+  } catch (error) {
+    console.error("خطأ في تهيئة التطبيق:", error);
+    showMessage("error", "⚠️ حدث خطأ في التحميل، سيتم استخدام البيانات التجريبية.");
+    loadDemoData();
+  } finally {
+    setTimeout(hideLoadingOverlay, 1200);
+  }
+}
+
+
+    /* شاشة التحميل */
+    function showLoadingOverlay() {
+      document.getElementById("loadingOverlay").style.display = "flex";
+    }
+    function hideLoadingOverlay() {
+      document.getElementById("loadingOverlay").style.display = "none";
+    }
+
+
+    /* تحميل البيانات من Google Sheets كـ CSV */
+    async function initializeData(){
+      const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_CONFIG.sheetId}/export?format=csv&gid=${GOOGLE_SHEETS_CONFIG.gid}`;
+      try {
+            const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error("تعذر الوصول إلى Google Sheets");
+        const csv = await res.text();
+
+        const rows = parseCSV(csv);
+        if (!rows.length) throw new Error("ملف CSV فارغ");
+
+        // تعيين الحقول المقبولة (مرنة بالأسماء العربية/الإنجليزية)
+        const mapKey = (h) => normalize(h)
+          .replace(/[\s_]+/g, "")
+          .replace(/[^\u0600-\u06FFa-z0-9]/g, "");
+
+        const header = rows[0].map(mapKey);
+        const idx = (keys) => {
+          const wanted = keys.map(mapKey);
+          for (let i = 0; i < header.length; i++) {
+            if (wanted.includes(header[i])) return i;
+          }
+          return -1;
+        };
+
+        const col = {
+          traineeId: idx(["الرقمالتدريبي","رقمالمتدرب","traineeid","studentid","id"]),
+          traineeName: idx(["الاسم","الاسمالمتكامل","الاسمبالكامل","traineename","name"]),
+          mentorName: idx(["اسمالمرشد","المرشد","mentor","advisor","اسمالمرشدالأكاديمي"]),
+          office: idx(["المكتب","رقمالمكتب","office","room"]),
+          telegram: idx(["التليجرام","معرفالتليجرام","telegram","tg","حسابالتليجرام"]),
+          email: idx(["البريد","البريدالالكتروني","email","mail"]),
+          group: idx(["المجموعة","رابطالمجموعة","grouplink","telegramgroup","whatsappgroup"]),
+          dept: idx(["القسم","التخصص","القسمالتدريبي","department","dept"])
+        };
+
+        // بناء قاعدة البيانات
+        trainersData = {};
+        const allMentorNames = new Set();
+        let records = [];
+
+        for (let r = 1; r < rows.length; r++) {
+          const row = rows[r];
+          if (!row || !row.length) continue;
+
+          const rec = {
+            traineeId: getCell(row, col.traineeId),
+            traineeName: getCell(row, col.traineeName),
+            mentorName: getCell(row, col.mentorName),
+            office: getCell(row, col.office),
+            telegram: cleanHandle(getCell(row, col.telegram)),
+            email: getCell(row, col.email),
+            group: getCell(row, col.group),
+            dept: getCell(row, col.dept)
+          };
+
+          if (!rec.traineeId && !rec.traineeName && !rec.mentorName) continue;
+
+          // فهرسة بحسب رقم المتدرب
+          if (rec.traineeId) {
+            const key = normalize(rec.traineeId);
+            trainersData["id:" + key] = rec;
+          }
+          // فهرسة بحسب اسم المرشد (قائمة)
+          if (rec.mentorName) {
+            const mkey = "mentor:" + normalize(rec.mentorName);
+            if (!trainersData[mkey]) trainersData[mkey] = [];
+            trainersData[mkey].push(rec);
+            allMentorNames.add(rec.mentorName.trim());
+          }
+
+          records.push(rec);
+        }
+
+        isDataLoaded = true;
+
+        // عدّاد المسجّلين
+        const spReg = document.getElementById("sp-registered");
+        if (spReg) spReg.textContent = String(records.length);
+
+        // آخر تحديث (تنسيق سعودي)
+        const spLU = document.getElementById("sp-lastUpdate");
+        const nowSA = new Date().toLocaleString("ar-SA");
+        if (spLU) spLU.textContent = nowSA;
+
+        // قاعدة البيانات: محدّثة
+        setChipState("sp-db", "ok", "محدّثة");
+
+        // حضّر اقتراحات البحث
+        // تجهيز اقتراحات البحث من أسماء المرشدين وأرقام المتدربين
+        buildSearchSuggestions([...allMentorNames], records.map(x => x.traineeId).filter(Boolean));
+        } catch (e) {
+          console.error(e);
+          await new Promise(res => setTimeout(res, GOOGLE_SHEETS_CONFIG.fallbackDelay));
+          loadDemoData();
+          setChipState("sp-db", "warn", "تجريبية"); // ← أضِف هذا السطر
+        }
+    }
+
+      async function initializeCoursesData() {
+    const url = `https://docs.google.com/spreadsheets/d/${COURSES_CONFIG.sheetId}/export?format=csv&gid=${COURSES_CONFIG.gid}`;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("تعذر الوصول إلى ورقة المقررات");
+      const csv = await res.text();
+
+      const rows = parseCSV(csv);
+      if (!rows.length) throw new Error("ملف CSV للمقررات فارغ");
+
+      // مطابقة رؤوس الأعمدة (مرنة بالعربي/إنجليزي)
+      const mapKey = (h) => normalize(h).replace(/[\s_]+/g,"").replace(/[^\u0600-\u06FFa-z0-9]/g,"");
+      const header = rows[0].map(mapKey);
+      const idx = (keys) => {
+        const wanted = keys.map(mapKey);
+        for (let i=0;i<header.length;i++) if (wanted.includes(header[i])) return i;
+        return -1;
+      };
+
+      const col = {
+        section:   idx(["الشعبه","رقمالشعبه","section","crn"]),
+        course:    idx(["المقرر","اسمالمقرر","course","coursename"]),
+        trainer:   idx(["المدرب","اسمالمدرب","trainer","instructor","teacher"]),
+        channel:   idx(["رابطالقناه","رابطالقناة","التليجرام","رابطالتليجرام","telegram","grouplink"])
+      };
+
+      coursesBySection = {};
+      sectionList = [];
+
+      for (let r=1; r<rows.length; r++) {
+        const row = rows[r];
+        if (!row || !row.length) continue;
+
+        const rec = {
+          section:  getCell(row, col.section),
+          course:   getCell(row, col.course),
+          trainer:  getCell(row, col.trainer),
+          channel:  getCell(row, col.channel)
+        };
+
+        if (!rec.section) continue;
+
+        const key = normalize(rec.section);
+        coursesBySection[key] = rec;       // نفترض الشعبة فريدة
+        sectionList.push(rec.section);
+      }
+
+      buildCourseSuggestions(sectionList);
+    } catch (e) {
+      console.error("initializeCoursesData:", e);
+      // نخلي اللوحة تشتغل حتى لو ما تحملت البيانات
+      sectionList = [];
+      coursesBySection = {};
+    }
+  }
+
+
+      function buildCourseSuggestions(sections) {
+      const input = document.getElementById("courseSection");
+      input.addEventListener("input", debounce(updateCourseSuggestions, 180));
+      input.addEventListener("focus", updateCourseSuggestions);
+      document.addEventListener("click", (e) => {
+        const box = document.getElementById("courseSearchSuggestions");
+        if (!box) return;
+        if (!box.contains(e.target) && e.target !== input) box.style.display = "none";
+      });
+    }
+
+    function updateCourseSuggestions() {
+      const term = normalize(document.getElementById("courseSection").value);
+      const box = document.getElementById("courseSearchSuggestions");
+      box.innerHTML = "";
+      if (!term) { box.style.display = "none"; return; }
+
+      const items = sectionList
+        .filter(s => normalize(s).includes(term))
+        .slice(0, 8)
+        .map(s => ({ label: `🔎 الشعبة ${s}`, value: s }));
+
+      if (!items.length) { box.style.display = "none"; return; }
+
+      for (const it of items) {
+        const div = document.createElement("div");
+        div.className = "suggestion-item";
+        div.textContent = it.label;
+        div.onclick = () => {
+          document.getElementById("courseSection").value = it.value;
+          box.style.display = "none";
+        };
+        box.appendChild(div);
+      }
+      box.style.display = "block";
+    }
+
+
+    function handleCourseSearch(sectionInput) {
+      const key = normalize(sectionInput);
+      const rec = coursesBySection[key] || null;
+
+      const box = document.getElementById("courseResult");
+      if (!rec) {
+        box.style.display = "block";
+        box.innerHTML = `
+          <div class="message error" style="display:block">⚠️ لم يتم العثور على شعبة بهذا الرقم.</div>
+        `;
+        return;
+      }
+
+      box.style.display = "block";
+      const channelHTML = rec.channel
+        ? `<a class="clickable-info" href="${formatTelegram(rec.channel)}" target="_blank" rel="noopener">🔗 رابط القناة</a>`
+        : `<span class="non-clickable">لا يوجد رابط قناة</span>`;
+
+      box.innerHTML = `
+        <div class="dept-head"><h4>نتيجة البحث لشعبة: ${escapeHtml(rec.section)}</h4></div>
+        <div class="staff-card">
+          <div class="staff-name">📘 المقرر: ${escapeHtml(rec.course || "—")}</div>
+          <div class="staff-contact">👨‍🏫 المدرب: ${escapeHtml(rec.trainer || "—")}</div>
+          <div class="staff-contact">🔎 رقم الشعبة: ${escapeHtml(rec.section)}</div>
+          <div class="staff-contact">💬 التليجرام: ${channelHTML}</div>
+        </div>
+      `;
+    }
+
+    function formatTelegram(linkOrHandle) {
+      const raw = (linkOrHandle || "").trim();
+      if (!raw) return "#";
+      if (/^https?:\/\//i.test(raw)) return raw;
+      const handle = raw.replace(/^@+/, "");
+      return `https://t.me/${handle}`;
+    }
+
+    function escapeHtml(s) {
+      return String(s || "").replace(/[&<>"']/g, m =>
+        ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+
+    /* ===== أدوات CSV بسيطة تدعم القيم المقتبسة ===== */
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cur = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i+1] === '"') { cur += '"'; i++; }
+            else { inQuotes = false; }
+          } else {
+            cur += c;
+          }
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ",") { row.push(cur); cur = ""; }
+          else if (c === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; }
+          else if (c === "\r") { /* ignore */ }
+          else cur += c;
+        }
+      }
+      row.push(cur);
+      rows.push(row);
+      // إزالة صفوف فارغة بالكامل
+      return rows.filter(r => r.some(x => (x || "").trim() !== ""));
+    }
+    function getCell(row, idx) { return idx >= 0 && idx < row.length ? (row[idx] || "").trim() : ""; }
+
+    /* ====== أدوات عامة ====== */
+    function normalize(s) {
+      return String(s || "")
+        .toLowerCase()
+        .replace(/[ًٌٍَُِّْ~`^]/g, "")
+        .replace(/[اإأآ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+    function cleanHandle(h) {
+      h = (h || "").trim();
+      if (!h) return "";
+      if (h.startsWith("@")) return h;
+      if (/t\.me\/|telegram\.me\//i.test(h)) {
+        const m = h.match(/(?:t\.me|telegram\.me)\/([^\/\s]+)/i);
+        return m ? "@" + m[1] : h;
+      }
+      return "@" + h.replace(/^@+/, "");
+    }
+
+    /* ====== اقتراحات البحث ====== */
+    let suggestionPool = { mentors: [], ids: [] };
+    function buildSearchSuggestions(mentors, ids) {
+      suggestionPool.mentors = mentors.filter(Boolean).sort();
+      suggestionPool.ids = ids.filter(Boolean);
+      const input = document.getElementById("traineeId");
+      input.addEventListener("input", debounce(updateSuggestions, 180));
+      input.addEventListener("focus", updateSuggestions);
+      document.addEventListener("click", (e) => {
+        const box = document.getElementById("searchSuggestions");
+        if (!box.contains(e.target) && e.target !== input) box.style.display = "none";
+      });
+    }
+
+    function updateSuggestions() {
+      const term = normalize(document.getElementById("traineeId").value);
+      const box = document.getElementById("searchSuggestions");
+      box.innerHTML = "";
+      if (!term) { box.style.display = "none"; return; }
+
+      const m = suggestionPool.mentors
+        .filter(n => normalize(n).includes(term))
+        .slice(0, 6)
+        .map(n => ({ type: "mentor", label: `👨‍🏫 ${n}`, value: n }));
+
+      const ids = suggestionPool.ids
+        .filter(id => normalize(id).includes(term))
+        .slice(0, 6)
+        .map(id => ({ type: "id", label: `🆔 ${maskId(id)}`, value: id }));
+
+      const items = [...m, ...ids].slice(0, 8);
+      if (!items.length) { box.style.display = "none"; return; }
+
+      for (const it of items) {
+        const div = document.createElement("div");
+        div.className = "suggestion-item";
+        div.textContent = it.label;
+
+        if (it.type === "mentor") {
+          div.onclick = () => {
+            document.getElementById("traineeId").value = it.value;
+            box.style.display = "none";
+          };
+        } else {
+          div.classList.add("disabled");
+          div.setAttribute("aria-disabled","true");
+        }
+
+        box.appendChild(div);
+      }
+      box.style.display = "block";
+    }
+
+    function maskId(id) {
+      id = String(id || "");
+      if (id.length <= 3) return id;
+      if (id.length <= 5) return id.slice(0,3) + "****";
+      return id.slice(0,3) + "******" + id.slice(-2);
+    }
+
+    function debounce(fn, wait=200) {
+      let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+    }
+
+    /* ====== تشغيل النصائح ====== */
+    function startTickerRotation() {
+      const el = document.getElementById("tickerText");
+      const durStr = getComputedStyle(el).animationDuration; // مثل "30s"
+      const durMs = durStr.endsWith("ms") ? parseFloat(durStr) : parseFloat(durStr) * 1000;
+
+      let i = 0;
+
+      // ابدأ بأول نصيحة فورًا + أعد تشغيل الأنيميشن من البداية
+      el.style.animation = "none";
+      void el.offsetWidth; // force reflow
+      el.textContent = tips[i];
+      el.style.animation = "";
+
+      function nextTip() {
+        i = (i + 1) % tips.length;
+
+        el.style.animation = "none";
+        void el.offsetWidth;          // reset
+        el.textContent = tips[i];     // غيّر النص
+        el.style.animation = "";      // شغّل الأنيميشن من البداية
+
+        setTimeout(nextTip, durMs);   // بدّل بعد ما تخلص الدورة
+      }
+
+      setTimeout(nextTip, durMs); // أول تبديل بعد اكتمال أول دورة
+    }
+
+    function startQualityTipsRotation() {
+      const el = document.getElementById("qualityTipText");
+      let i = 0;
+      const tick = () => {
+        el.style.opacity = 0;
+        setTimeout(() => {
+          el.textContent = qualityTips[i];
+          el.style.opacity = 1;
+          i = (i + 1) % qualityTips.length;
+        }, 250);
+      };
+      tick();
+      setInterval(tick, 5000);
+    }
+
+
+
+
+    /* ====== رسائل عامة ====== */
+    function showMessage(type, text) {
+      const ids = { success: "successMsg", error: "errorMsg", warning: "warningMsg" };
+      Object.values(ids).forEach(id => {
+        const el = document.getElementById(id);
+        el.style.display = "none"; el.textContent = "";
+      });
+      const el = document.getElementById(ids[type] || "successMsg");
+      el.textContent = text;
+      el.style.display = "block";
+      setTimeout(() => { el.style.display = "none"; }, 4500);
+    }
+
+    /* ====== عرض بيانات المرشد ====== */
+    function fillTrainerInfo(rec) {
+      document.getElementById("mentorName").textContent = rec.mentorName || "—";
+      document.getElementById("trainerOffice").textContent = rec.office || "—";
+
+      const tgC = document.getElementById("trainerAccountContainer");
+      tgC.innerHTML = "";
+      if (rec.telegram) {
+        const a = document.createElement("a");
+        a.href = formatTelegram(rec.telegram);
+        a.target = "_blank"; a.rel = "noopener"; a.textContent = rec.telegram;
+        a.className = "clickable-info";
+        tgC.appendChild(a);
+      } else {
+        tgC.textContent = "—";
+      }
+
+      
+
+
+      const emC = document.getElementById("trainerEmailContainer");
+      emC.innerHTML = "";
+      if (rec.email) {
+        const a = document.createElement("a");
+        a.href = `mailto:${rec.email}`;
+        a.textContent = rec.email;
+        a.className = "clickable-info";
+        emC.appendChild(a);
+      } else {
+        emC.textContent = "—";
+      }
+
+      const link = document.getElementById("mentorGroupLink");
+      const no = document.getElementById("noMentorGroup");
+      if (rec.group) {
+        link.href = rec.group;
+        link.style.display = "inline-block";
+        no.style.display = "none";
+      } else {
+        link.style.display = "none";
+        no.style.display = "inline";
+      }
+
+      document.getElementById("trainerInfo").style.display = "block";
+    }
+
+    /* ====== إحصائيات ====== */
+    function updateSystemStats() {
+      // آخر تحديث (تعريف عام أولي – قبل تحميل الزيارات)
+      const spLU = document.getElementById("sp-lastUpdate");
+      if (spLU) spLU.textContent = new Date().toLocaleString("ar-SA");
+
+      // حالة النظام: متصل
+      setChipState("sp-system", "ok", "متصل");
+      // حالة قاعدة البيانات تُحدّث داخل initializeData / loadDemoData
+    }
+
+
+      // حالات الشرائح (ok | warn | err)
+      function setChipState(elId, state, label){
+        const el = document.getElementById(elId);
+        if(!el) return;
+        el.setAttribute("data-state", state);
+        if(label) el.textContent = label;
+      }
+      // أمثلة:
+      setChipState("sp-system", "ok",   "متصل");
+      setChipState("sp-db",     "ok",   "محدّثة");
+      // setChipState("sp-db", "warn", "تجريبية");
+      // setChipState("sp-system", "err", "متوقّف");
+
+      // زوار اليوم + ترند
+      function updateToday(todayCount, prevCount){
+        const nEl = document.getElementById("sp-todayNum");
+        const tEl = document.getElementById("sp-trend");
+        if (!nEl || !tEl) return;
+        nEl.textContent = Number(todayCount||0).toLocaleString("ar-SA");
+        tEl.classList.remove("up","down","flat");
+        if (prevCount == null || todayCount === prevCount){ tEl.textContent = "→"; tEl.classList.add("flat"); }
+        else if (todayCount > prevCount){ tEl.textContent = "↑"; tEl.classList.add("up"); }
+        else { tEl.textContent = "↓"; tEl.classList.add("down"); }
+      }
+
+
+    function toggleMentorSearch(force){
+      const card = document.getElementById("mentorSearchCard");
+      const show = (typeof force === "boolean") ? force : (card.style.display !== "block");
+      card.style.display = show ? "block" : "none";
+
+      // أغلق صندوق الاقتراحات عند الإخفاء
+      if (!show) {
+        const box = document.getElementById("searchSuggestions");
+        if (box) box.style.display = "none";
+      }
+
+      if (show){
+        const input = document.getElementById("traineeId");
+        if (input) input.focus({ preventScroll: true });
+        card.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+
+
+    document.getElementById("qi-voice")?.addEventListener("click", () => {
+      if (!VOICE_URL) return alert("لم يتم إعداد رابط نموذج صوتك مسموع بعد.");
+      window.open(VOICE_URL, "_blank", "noopener");
+    });
+
+    /* ====== أحداث وواجهات ====== */
+    function setupEventListeners() {
+      // تبديل الوضع الليلي
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        document.getElementById("themeToggle").textContent =
+          document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+      });
+
+      // خريطة الأزرار ↔ اللوحات (عرّفها قبل الاستخدام)
+      const panels = {
+        "qi-guidance": "guidancePanel",
+        "qi-departments": "departmentsPanel",
+        "qi-quality": "qualityPanel",
+        "qi-nums": "numberPanel",
+        "qi-library": "libraryPanel",
+        "qi-studentsAffairs":"studentsAffairsPanel",
+        "qi-courses": "coursesPanel",
+        "qi-support": "supportPanel",
+        "qi-contact": "contactPanel",
+        "qi-rafed": "rafedPanel"
+      };
+
+      // أيقونة بحث المرشد
+      document.getElementById("qi-mentor").addEventListener("click", () => {
+        // اخفِ اللوحات كلها
+        [
+          "initiativeBox","rafedPanel","guidancePanel","departmentsPanel","qualityPanel",
+          "numberPanel","libraryPanel","coursesPanel","supportPanel","contactPanel",
+          "studentsAffairsPanel","searchBox" // 👈 مهم
+        ].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = "none"; });
+
+        clearSearchUI();
+        toggleMentorSearch(true); // إظهار بطاقة البحث الأساسية فقط
+      });
+
+
+      // أزرار اللوحات السريعة (أخفِ كرت البحث عند الانتقال)
+      Object.entries(panels).forEach(([btnId, panelId]) => {
+        document.getElementById(btnId).addEventListener("click", () => {
+          clearSearchUI();
+          toggleMentorSearch(false);
+          togglePanel(panelId);
+        });
+      });
+
+      // تبويبات الأقسام
+      document.querySelectorAll(".dept-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".dept-tab").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(".dept-content").forEach(c => c.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.dept).classList.add("active");
+        });
+      });
+
+      // نموذج بحث المقررات
+      document.getElementById("courseForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const s = document.getElementById("courseSection").value.trim();
+        if (!s) { showMessage("warning","اكتب رقم الشعبة أولاً"); return; }
+        handleCourseSearch(s);
+      });
+
+      document.getElementById("courseSection").addEventListener("input", () => {
+        const box = document.getElementById("courseResult");
+        box.style.display = "none"; box.innerHTML = "";
+      });
+
+      // نموذج بحث المرشد
+      document.getElementById("traineeForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const q = document.getElementById("traineeId").value.trim();
+        if (!q) { showMessage("warning","اكتب رقمك التدريبي أو اسم المرشد أولاً"); return; }
+        handleSearch(q);
+      });
+
+      // ESC لتنظيف الواجهة
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          clearSearchUI();
+          const box = document.getElementById("courseResult");
+          box.style.display = "none"; box.innerHTML = "";
+        }
+      });
+
+      document.getElementById("traineeId").addEventListener("input", () => clearSearchUI());
+    }
+
+    
+
+      function togglePanel(panelId) {
+        [
+          "initiativeBox",
+          "rafedPanel",
+          "guidancePanel",
+          "departmentsPanel",
+          "qualityPanel",
+          "numberPanel",
+          "libraryPanel",
+          "coursesPanel",
+          "supportPanel",
+          "contactPanel",
+          "studentsAffairsPanel", // ✅ جديد
+          "searchBox" 
+        ].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.style.display = (id === panelId)
+            ? (el.style.display === "block" ? "none" : "block")
+            : "none";
+        });
+      }
+
+
+
+
+      /* ====== منطق البحث ====== */
+      function handleSearch(query) {
+        const qn = normalize(query);
+        let rec = null;
+
+        // إذا كان رقم متدرب (3 أرقام فأكثر)
+        if (/^\d{3,}$/.test(query.replace(/\s/g, ""))) {
+          rec = trainersData["id:" + normalize(query)] || null;
+        }
+
+        // إذا ما لقى، جرّب باسم المرشد
+        if (!rec) {
+          const list = trainersData["mentor:" + qn];
+          if (Array.isArray(list) && list.length) {
+            rec = list[0]; // نعرض أول نتيجة
+            if (list.length > 1) {
+              showMessage("warning", `تم العثور على ${list.length} متدرب(ين) لهذا المرشد، عُرضت أول نتيجة فقط`);
+            }
+          }
+        }
+
+        // إذا ما وجد أي نتيجة
+        if (!rec) {
+          showMessage("error", "لم يتم العثور على نتائج. تأكد من إدخال الرقم التدريبي أو اسم المرشد بشكل صحيح.");
+          return;
+        }
+
+        // إخفاء أي لوحات مفتوحة (علشان يبرز فقط بطاقة المرشد)
+        ["guidancePanel","departmentsPanel","qualityPanel","numberPanel","libraryPanel","supportPanel","contactPanel"]
+          .forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+          });
+
+        // عرض البيانات
+        fillTrainerInfo(rec);
+        showMessage("success", "✅ تم العثور على المرشد الخاص بك");
+
+        // تمرير الشاشة لبطاقة المرشد
+        document.getElementById("trainerInfo").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+
+        /* ====== تنظيف واجهة البحث (عام) ====== */
+    function clearSearchUI({ clearInput = false } = {}) {
+      const card = document.getElementById("trainerInfo");
+      if (card) card.style.display = "none";
+
+      ["successMsg","errorMsg","warningMsg"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = "none";
+        el.textContent = "";
+      });
+
+      const box = document.getElementById("searchSuggestions");
+      if (box) box.style.display = "none";
+
+      if (clearInput) {
+        const inp = document.getElementById("traineeId");
+        if (inp) inp.value = "";
+      }
+    }
+
+
+    /* ====== وظائف الأزرار المشار إليها في البطاقات ====== */
+    function openWhatsApp(number) {
+      const digits = String(number||"").replace(/\D+/g,""); // 9665...
+      if (!digits) return;
+      window.open(`https://wa.me/${digits}`, "_blank", "noopener");
+    }
+    function openTelegram(handle) {
+      const url = `https://t.me/${handle.replace("@","")}`;
+      window.open(url, "_blank","noopener");
+    }
+    function showForms() { alert("نماذج إرشادية: (نموذج اعتذار، تحويل لوحدة الإرشاد، طلب دعم...)\n— أضف روابط النماذج هنا لاحقًا."); }
+        function showCalendar() {
+      if (!ACADEMIC_CALENDAR_URL) {
+        alert("لم يتم إعداد رابط التقويم بعد.");
+        return;
+      }
+      window.open(ACADEMIC_CALENDAR_URL, "_blank", "noopener");
+    }
+
+     function showReferences(){
+    if (!REFERENCES_URL) {
+      alert("لم يتم إعداد رابط المراجع/الخطط بعد.");
+      return;
+    }
+    window.open(REFERENCES_URL, "_blank", "noopener");
+  }
+
+      function showLibrary() {
+      if (!DIGITAL_LIBRARY_URL) {
+        alert("لم يتم إعداد رابط المكتبة الرقمية بعد.");
+        return;
+      }
+      window.open(DIGITAL_LIBRARY_URL, "_blank", "noopener");
+      }
+
+    function showEmergency() { alert("الطوارئ: 997 إسعاف | 998 دفاع مدني | 999 شرطة\n— أضف أرقام الطوارئ الداخلية للكلية."); }
+
+    /* ====== مشاركة/طباعة/حفظ ====== */
+    function shareTrainerInfo() {
+      const name = document.getElementById("mentorName").textContent || "";
+      const office = document.getElementById("trainerOffice").textContent || "";
+      const tg = (document.getElementById("trainerAccountContainer").innerText || "").trim();
+      const email = (document.getElementById("trainerEmailContainer").innerText || "").trim();
+      const text = `معلومات المرشد:\nالاسم: ${name}\nالمكتب: ${office}\nالتليجرام: ${tg}\nالبريد: ${email}`;
+
+      if (navigator.share) {
+        navigator.share({ title: "معلومات المرشد", text }).catch(()=>copyText(text));
+      } else {
+        copyText(text);
+      }
+    }
+    function copyText(t) {
+      navigator.clipboard?.writeText(t);
+      showMessage("success","تم نسخ المعلومات إلى الحافظة 📋");
+    }
+    function printTrainerInfo(){ window.print(); }
+
+    function saveToContacts() {
+      const n = (document.getElementById("mentorName").textContent || "").trim();
+      const e = (document.getElementById("trainerEmailContainer").innerText || "").trim();
+      const tg = (document.getElementById("trainerAccountContainer").innerText || "").trim();
+      const off = (document.getElementById("trainerOffice").textContent || "").trim();
+
+      const vcf = [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `FN:${n}`,
+        e ? `EMAIL;TYPE=INTERNET:${e}` : "",
+        tg ? `X-SOCIALPROFILE;type=telegram:${tg.replace("@","")}` : "",
+        off ? `NOTE:المكتب ${off}` : "",
+        "END:VCARD"
+      ].filter(Boolean).join("\n");
+
+      const blob = new Blob([vcf], { type: "text/vcard;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${n || "mentor"}.vcf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    /* ====== بيانات تجريبية في حال الفشل ====== */
+    function loadDemoData() {
+      const demo = [
+        { traineeId: "1234567", traineeName: "خالد صالح", mentorName: "م. أحمد الزهراني", office: "205", telegram: "@ahmad_trainer", email: "ahmad.z@tvtc.gov.sa", group: "https://t.me/+demo_it_group", dept: "الحاسب" },
+        { traineeId: "7654321", traineeName: "سعود محمد", mentorName: "م. خالد الدوسري", office: "305", telegram: "@khalid_electronics", email: "khalid.d@tvtc.gov.sa", group: "", dept: "الإلكترونيات" },
+        { traineeId: "2468101", traineeName: "تركي علي", mentorName: "أ. ريم الأحمدي", office: "405", telegram: "@reem_arabic", email: "reem.a@tvtc.gov.sa", group: "https://t.me/+demo_general_group", dept: "الدراسات العامة" }
+      ];
+
+      trainersData = {};
+      const names = new Set();
+      demo.forEach(rec => {
+        trainersData["id:" + normalize(rec.traineeId)] = rec;
+        const mkey = "mentor:" + normalize(rec.mentorName);
+        if (!trainersData[mkey]) trainersData[mkey] = [];
+        trainersData[mkey].push(rec);
+        names.add(rec.mentorName);
+      });
+
+      isDataLoaded = true;
+
+      // Stats Pro
+      const spReg = document.getElementById("sp-registered");
+      if (spReg) spReg.textContent = String(demo.length);
+
+      const spLU = document.getElementById("sp-lastUpdate");
+      if (spLU) spLU.textContent = new Date().toLocaleString("ar-SA");
+
+      setChipState("sp-db", "warn", "تجريبية");
+
+      buildSearchSuggestions([...names], demo.map(x => x.traineeId));
+      showMessage("warning","تم التحويل إلى بيانات تجريبية.");
+    }
+
+          /* ====== Service Worker (تسجيل اختياري إذا توفّر ملف) ====== */
+          function setupServiceWorker() {
+            if ("serviceWorker" in navigator) {
+              // ملاحظة: يتطلب ملف SW حقيقي (sw.js). إن لم يوجد، نتجاوز بهدوء.
+              navigator.serviceWorker.register("sw.js").catch(() => {
+                console.info("لم يتم العثور على sw.js — تخطّي التسجيل.");
+              });
+            }
+          }
+
+
+          function initTipsKPI(opt){
+        const { tips, textEl, barEl, duration = 6000 } = opt;
+        if (!tips?.length || !textEl || !barEl) return;
+
+        let i = 0;
+
+        const showTip = () => {
+          textEl.style.opacity = 0;
+          barEl.style.transition = "none";
+          barEl.style.width = "0%";
+          barEl.textContent = "—";
+
+          setTimeout(() => {
+            textEl.textContent = tips[i];
+            textEl.style.opacity = 1;
+
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || duration === 0) {
+              barEl.textContent = "";
+              barEl.style.width = "100%";
+              setTimeout(() => {
+                i = (i + 1) % tips.length;
+                showTip();
+              }, 1500);
+              return;
+            }
+
+            requestAnimationFrame(() => {
+              barEl.textContent = "";
+              barEl.style.transition = `width ${duration}ms linear`;
+              barEl.style.width = "100%";
+            });
+
+            setTimeout(() => {
+              i = (i + 1) % tips.length;
+              showTip();
+            }, duration);
+
+          }, 200);
+        };
+
+        showTip();
+      }
+
+    /* ====== نهاية السكربت ====== */
+    </script>
+<footer class="site-footer">
+  ⚙️ الإصدار الحالي: 1.5 <br>
+  &copy; 2025 الكلية التقنية بحقل <br>
+  تطوير: وكالة ضبط الجودة – جميع الحقوق محفوظة <br>
+  "🌟 معاً نحو جودة مستدامة 🌟"
+</footer>
+    </body>
+    </html>
