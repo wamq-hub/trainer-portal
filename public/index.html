@@ -1316,19 +1316,78 @@
                 </div>
               </div>
 
-              <!-- روابط سريعة -->
+              <!-- بطاقة روابط سريعة + التواصل (استبدال كامل للبطاقة القديمة) -->
               <div class="service-card" title="روابط سريعة">
                 <div class="service-icon">🔗</div>
                 <div class="service-title">روابط سريعة</div>
-                <div class="service-desc" style="display:flex;flex-direction:column;gap:8px">
-                  <a id="rafedOpenLink" class="btn" style="padding:10px;border-radius:10px;text-decoration:none;text-align:center" target="_blank" rel="noopener">نموذج التسجيل في رافد</a>
-                  <a id="rafedGuideLink2" class="btn" style="padding:10px;border-radius:10px;text-decoration:none;text-align:center" target="_blank" rel="noopener">📄 دليل رافد (PDF)</a>
+
+                <div class="service-desc" style="display:flex;flex-direction:column;gap:10px">
+
+                  <!-- الروابط -->
+                  <a id="rafedOpenLink" class="btn"
+                    style="padding:10px;border-radius:10px;text-decoration:none;text-align:center"
+                    target="_blank" rel="noopener">نموذج التسجيل في رافد</a>
+
+                  <a id="rafedGuideLink2" class="btn"
+                    style="padding:10px;border-radius:10px;text-decoration:none;text-align:center"
+                    target="_blank" rel="noopener">📄 دليل رافد (PDF)</a>
+
+                  <!-- فاصل عنواني صغير -->
+                  <div style="display:flex;align-items:center;gap:8px;margin:6px 0 2px;">
+                    <span style="font-weight:700;">التواصل</span>
+                    <div style="flex:1;height:1px;background:#e5e7eb;"></div>
+                  </div>
+
+                  <!-- قنوات التواصل -->
+                  <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:.95rem;">
+                    <li style="display:flex;align-items:center;gap:8px;">
+                      <span aria-hidden="true">🏢</span>
+                      <span style="font-weight:600;">رقم المكتب:</span>
+                      <span dir="ltr" style="font-family:monospace;">1750111114</span>
+                      <button type="button" onclick="copyText('1750111114')" 
+                              style="margin-inline-start:auto;padding:.25rem .5rem;border-radius:8px;border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;">
+                        نسخ
+                      </button>
+                    </li>
+
+                    <li style="display:flex;align-items:center;gap:8px;">
+                      <span aria-hidden="true">💬</span>
+                      <span style="font-weight:600;">التليجرام:</span>
+                      <a href="javascript:void(0)" onclick="openTelegram('muath_alsharifi')" 
+                        style="text-decoration:underline;">@muath_alsharifi</a>
+                    </li>
+
+                    <li style="display:flex;align-items:center;gap:8px;">
+                      <span aria-hidden="true">✉️</span>
+                      <span style="font-weight:600;">البريد:</span>
+                      <a href="mailto:muath.a2@tvtc.gov.sa" style="direction:ltr;">muath.a2@tvtc.gov.sa</a>
+                    </li>
+                  </ul>
+
                 </div>
               </div>
-            </div>
-          `;
+              </div>
+              `;
+                        
+              qrGrid.insertAdjacentHTML("beforebegin", html);
 
-          qrGrid.insertAdjacentHTML("beforebegin", html);
+              /* لا حاجة لإضافة contactHtml أو panel.insertAdjacentHTML("beforeend", contactHtml);
+                تم إدراج معلومات التواصل داخل البطاقة أعلاه. */
+
+              /* مُساعد النسخ (لن يُعرّف مرّة ثانية إن كان موجوداً لديك) */
+              if (typeof copyText !== 'function') {
+                function copyText(t){
+                  try{
+                    navigator.clipboard.writeText(t).then(()=>alert('✅ تم نسخ النص.'));
+                  }catch(e){
+                    const ta=document.createElement('textarea');
+                    ta.value=t; document.body.appendChild(ta);
+                    ta.select(); document.execCommand('copy'); ta.remove();
+                    alert('✅ تم نسخ النص.');
+                  }
+                }
+              }
+
 
           // ربط الأزرار بالرابطين العموميين
           const openA  = panel.querySelector("#rafedOpenLink");
@@ -1356,6 +1415,7 @@
         })();
       })();
     });
+
 
     /* نصائح للمتدربين */
     const tips = [
