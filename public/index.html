@@ -2514,6 +2514,18 @@ async function initializeApp() {
   </div>
 </div>
 
+<!-- أيقونة السياسة الدائمة -->
+<a href="privacy-terms.html" target="_blank" id="policyIcon" class="policy-icon" title="سياسة الخصوصية وشروط الاستخدام">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14 2 14 8 20 8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+    <polyline points="10 9 9 9 8 9"></polyline>
+  </svg>
+  <span class="policy-text">السياسة</span>
+</a>
+
 <style>
 .consent-bar {
   position: fixed;
@@ -2586,6 +2598,50 @@ async function initializeApp() {
   transform: translateY(0);
 }
 
+/* أيقونة السياسة الدائمة */
+.policy-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #003366 0%, #0070C0 100%);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0, 112, 192, 0.4);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.policy-icon.show {
+  display: flex;
+}
+
+.policy-icon:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 112, 192, 0.5);
+  background: linear-gradient(135deg, #0070C0 0%, #00ADEF 100%);
+}
+
+.policy-icon:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.policy-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.policy-text {
+  white-space: nowrap;
+}
+
 @keyframes slideUp {
   from {
     transform: translateY(100%);
@@ -2594,6 +2650,17 @@ async function initializeApp() {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -2612,6 +2679,18 @@ async function initializeApp() {
     width: 100%;
     padding: 14px;
   }
+  
+  .policy-icon {
+    bottom: 15px;
+    right: 15px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+  
+  .policy-icon svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /* للوضع الداكن */
@@ -2627,17 +2706,32 @@ body.dark-mode .consent-link {
 body.dark-mode .consent-link:hover {
   color: #81d4fa;
 }
+
+body.dark-mode .policy-icon {
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  border: 1px solid #444;
+}
+
+body.dark-mode .policy-icon:hover {
+  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
 </style>
 
 <script>
 // التحقق من موافقة المستخدم
 function checkConsent() {
   const hasConsent = localStorage.getItem('userConsent');
+  const bar = document.getElementById('consentBar');
+  const icon = document.getElementById('policyIcon');
+  
   if (!hasConsent) {
-    const bar = document.getElementById('consentBar');
-    if (bar) {
-      bar.classList.add('show');
-    }
+    // عرض شريط الموافقة
+    if (bar) bar.classList.add('show');
+  } else {
+    // عرض الأيقونة الدائمة
+    if (icon) icon.classList.add('show');
   }
 }
 
@@ -2645,11 +2739,19 @@ function checkConsent() {
 function acceptConsent() {
   localStorage.setItem('userConsent', 'true');
   const bar = document.getElementById('consentBar');
+  const icon = document.getElementById('policyIcon');
+  
   if (bar) {
     bar.style.animation = 'slideDown 0.4s ease-out';
     setTimeout(() => {
       bar.classList.remove('show');
       bar.style.display = 'none';
+      // إظهار الأيقونة بعد اختفاء الشريط
+      if (icon) {
+        setTimeout(() => {
+          icon.classList.add('show');
+        }, 200);
+      }
     }, 400);
   }
 }
