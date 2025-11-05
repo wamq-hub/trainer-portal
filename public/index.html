@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
       <meta charset="UTF-8">
@@ -2502,5 +2502,174 @@ async function initializeApp() {
   تطوير: وكالة ضبط الجودة – جميع الحقوق محفوظة <br>
   "🌟 معاً نحو جودة مستدامة 🌟"
 </footer>
+
+<!-- شريط الموافقة على السياسة -->
+<div id="consentBar" class="consent-bar">
+  <div class="consent-content">
+    <p class="consent-text">
+      باستخدامك لهذه المنصة، فإنك توافق على 
+      <a href="privacy-terms.html" target="_blank" class="consent-link">سياسة الخصوصية وشروط الاستخدام</a>
+    </p>
+    <button onclick="acceptConsent()" class="consent-btn">فهمت ✓</button>
+  </div>
+</div>
+
+<style>
+.consent-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #003366 0%, #0070C0 100%);
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  animation: slideUp 0.5s ease-out;
+  display: none;
+}
+
+.consent-bar.show {
+  display: block;
+}
+
+.consent-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.consent-text {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  flex: 1;
+  min-width: 250px;
+}
+
+.consent-link {
+  color: #ffd43b;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.consent-link:hover {
+  color: #ffe066;
+}
+
+.consent-btn {
+  background: white;
+  color: #003366;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.consent-btn:hover {
+  background: #ffd43b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.consent-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* للشاشات الصغيرة */
+@media (max-width: 600px) {
+  .consent-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .consent-text {
+    font-size: 0.9rem;
+  }
+  
+  .consent-btn {
+    width: 100%;
+    padding: 14px;
+  }
+}
+
+/* للوضع الداكن */
+body.dark-mode .consent-bar {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border-top: 1px solid #444;
+}
+
+body.dark-mode .consent-link {
+  color: #4fc3f7;
+}
+
+body.dark-mode .consent-link:hover {
+  color: #81d4fa;
+}
+</style>
+
+<script>
+// التحقق من موافقة المستخدم
+function checkConsent() {
+  const hasConsent = localStorage.getItem('userConsent');
+  if (!hasConsent) {
+    const bar = document.getElementById('consentBar');
+    if (bar) {
+      bar.classList.add('show');
+    }
+  }
+}
+
+// قبول الموافقة
+function acceptConsent() {
+  localStorage.setItem('userConsent', 'true');
+  const bar = document.getElementById('consentBar');
+  if (bar) {
+    bar.style.animation = 'slideDown 0.4s ease-out';
+    setTimeout(() => {
+      bar.classList.remove('show');
+      bar.style.display = 'none';
+    }, 400);
+  }
+}
+
+// تشغيل الفحص عند تحميل الصفحة
+window.addEventListener('load', checkConsent);
+</script>
+
+<style>
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+</style>
+
     </body>
     </html>
